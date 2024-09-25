@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat with Images</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 10px 15px;
+            color: white;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .menu .hamburger {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .menu .title {
+            font-size: 18px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .dropdown {
+            display: none;
+            background-color: #333;
+            position: fixed;
+            top: 50px;
+            width: 100%;
+            z-index: 999;
+            box-sizing: border-box;
+        }
+
+        .dropdown a {
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown a:hover {
+            background-color: #444;
+        }
+
+        .container {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .chat-container {
+            flex: 1;
+            max-width: 600px;
+            margin: 60px auto 0;
+            width: 100%;
+            height: calc(100vh - 60px);
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+            background-color: #f9f9f9;
+            margin-bottom: 50px;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .message.sent {
+            background-color: #DCF8C6;
+            align-self: flex-end;
+        }
+
+        .message.received {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .message img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+
+        .chat-input {
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-top: 1px solid #ddd;
+            background-color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+            margin-bottom: 0px;
+        }
+
+        .chat-input textarea {
+            flex: 1;
+            padding: 3px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            outline: none;
+            resize: none;
+            max-height: 100px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .chat-input button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+
+        .chat-input button .material-symbols-outlined {
+            font-size: 24px;
+            color: #4267B2;
+        }
+
+        .chat-input button:disabled .material-symbols-outlined {
+            color: #888;
+        }
+
+        /* About container */
+        .about-container {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div class="menu">
+    <div class="title">AI Chatbot</div>
+    <div class="hamburger" onclick="toggleDropdown()">☰</div>
+</div>
+<div class="dropdown" id="dropdown">
+    <a href="#" onclick="showContainer('chat')">Chat with AI</a>
+    <a href="#" onclick="showContainer('about')">About</a>
+</div>
+
+<!-- Chat container -->
+<div id="chat" class="chat-container container active">
+    <div class="chat-messages" id="chat-container"></div>
+    <div class="chat-input">
+        <textarea id="user-input" placeholder="Type your message..."></textarea>
+        <button onclick="sendMessage()" disabled>
+            <span class="material-symbols-outlined">send</span>
+        </button>
+    </div>
+</div>
+
+<!-- About container -->
+<div id="about" class="about-container container">
+    <h2>About this AI Chatbot</h2>
+    <p>This chatbot allows users to chat with an AI and receive text or image-based responses. Built with a modern user interface, it is designed for a seamless experience.</p>
+</div>
+
+<script>
+    function toggleDropdown() {
+        const dropdown = document.getElementById('dropdown');
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function showContainer(containerId) {
+        const containers = document.querySelectorAll('.container');
+        containers.forEach(container => container.classList.remove('active'));
+
+        const selectedContainer = document.getElementById(containerId);
+        selectedContainer.classList.add('active');
+
+        // Hide dropdown after selection
+        toggleDropdown();
+    }
+
+    function displayMessage(text, sender) {
+        const chatContainer = document.getElementById('chat-container');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message ' + sender;
+        
+        if (Array.isArray(text)) {
+            text.forEach(imgSrc => {
+                const img = document.createElement('img');
+                img.src = imgSrc;
+                messageDiv.appendChild(img);
+            });
+        } else {
+            messageDiv.textContent = text;
+        }
+
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function sendMessage() {
+        const textarea = document.getElementById('user-input');
+        const userInput = textarea.value.trim();
+        if (userInput) {
+            displayMessage(userInput, 'sent');
+            textarea.value = '';
+            autoResize(textarea);
+            document.querySelector('.chat-input button').disabled = true;
+
+            fetchChatResponse(userInput);
+        }
+    }
+
+    async function fetchChatResponse(userInput) {
+        try {
+            const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
+            const data = await response.json();
+            
+            if (data.message) {
+                displayMessage(data.message, 'received');
+            }
+            
+            if (data.images) {
+                displayMessage(data.images, 'received');
+            }
+        } catch (error) {
+            console.error("Error fetching AI response:", error);
+        }
+    }
+
+    document.getElementById('user-input').addEventListener('input', function () {
+        autoResize(this);
+        document.querySelector('.chat-input button').disabled = this.value.trim().length === 0;
+    });
+
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
+    }
+</script>
+</body>
+</html>
