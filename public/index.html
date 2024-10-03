@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat with Images</title>
+    <title>AI Chat with Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -17,7 +17,7 @@
         }
 
         .menu {
-            display: flex;
+            display: none;
             justify-content: space-between;
             align-items: center;
             background-color: #333;
@@ -123,7 +123,7 @@
         }
 
         .chat-input {
-            display: flex;
+            display: none;
             align-items: center;
             padding: 5px 10px;
             border-top: 1px solid #ddd;
@@ -167,18 +167,72 @@
             color: #888;
         }
 
-        /* About container */
-        .about-container {
-            max-width: 600px;
-            margin: 60px auto;
-            padding: 20px;
+        /* Auth container */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+        }
+
+        .auth-box {
             background-color: white;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
         }
+
+        .auth-box input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .auth-box button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4267B2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .auth-box button:hover {
+            background-color: #365899;
+        }
+
+        .auth-toggle {
+            margin-top: 10px;
+        }
+
+        .auth-toggle a {
+            color: #4267B2;
+            text-decoration: none;
+        }
+
     </style>
 </head>
 <body>
+
+<div class="auth-container" id="auth-container">
+    <div class="auth-box">
+        <h2 id="auth-title">Login</h2>
+        <input type="text" id="auth-username" placeholder="Username">
+        <input type="password" id="auth-password" placeholder="Password">
+        <button onclick="handleAuth()">Login</button>
+        <div class="auth-toggle">
+            <span id="toggle-text">Don't have an account? </span>
+            <a href="#" id="toggle-link" onclick="toggleAuth()">Sign Up</a>
+        </div>
+    </div>
+</div>
+
 <div class="menu">
     <div class="title">AI Chatbot</div>
     <div class="hamburger" onclick="toggleDropdown()">☰</div>
@@ -189,7 +243,7 @@
 </div>
 
 <!-- Chat container -->
-<div id="chat" class="chat-container container active">
+<div id="chat" class="chat-container container">
     <div class="chat-messages" id="chat-container"></div>
     <div class="chat-input">
         <textarea id="user-input" placeholder="Type your message..."></textarea>
@@ -206,6 +260,57 @@
 </div>
 
 <script>
+    let isLogin = true;
+    let users = JSON.parse(localStorage.getItem('users')) || {};
+
+    function toggleAuth() {
+        isLogin = !isLogin;
+        const authTitle = document.getElementById('auth-title');
+        const authButton = document.querySelector('.auth-box button');
+        const toggleText = document.getElementById('toggle-text');
+        const toggleLink = document.getElementById('toggle-link');
+
+        if (isLogin) {
+            authTitle.textContent = 'Login';
+            authButton.textContent = 'Login';
+            toggleText.textContent = "Don't have an account? ";
+            toggleLink.textContent = 'Sign Up';
+        } else {
+            authTitle.textContent = 'Sign Up';
+            authButton.textContent = 'Sign Up';
+            toggleText.textContent = 'Already have an account? ';
+            toggleLink.textContent = 'Login';
+        }
+    }
+
+    function handleAuth() {
+        const username = document.getElementById('auth-username').value;
+        const password = document.getElementById('auth-password').value;
+
+        if (isLogin) {
+            if (users[username] && users[username] === password) {
+                localStorage.setItem('currentUser', username);
+                showContainer('chat');
+                document.querySelector('.chat-input').style.display = 'flex';
+            } else {
+                alert('Invalid login credentials');
+            }
+        } else {
+            if (username && password) {
+                if (users[username]) {
+                    alert('Username already exists');
+                } else {
+                    users[username] = password;
+                    localStorage.setItem('users', JSON.stringify(users));
+                    alert('Account created. Please login.');
+                    toggleAuth();
+                }
+            } else {
+                alert('Please enter both username and password');
+            }
+        }
+    }
+
     function toggleDropdown() {
         const dropdown = document.getElementById('dropdown');
         dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
@@ -220,13 +325,17 @@
 
         // Hide dropdown after selection
         toggleDropdown();
+
+        // Hide the login screen after authentication
+        document.getElementById('auth-container').style.display = 'none';
+        document.querySelector('.menu').style.display = 'flex';
     }
 
     function displayMessage(text, sender) {
         const chatContainer = document.getElementById('chat-container');
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message ' + sender;
-        
+
         if (Array.isArray(text)) {
             text.forEach(imgSrc => {
                 const img = document.createElement('img');
@@ -258,11 +367,11 @@
         try {
             const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
             const data = await response.json();
-            
+
             if (data.message) {
                 displayMessage(data.message, 'received');
             }
-            
+
             if (data.images) {
                 displayMessage(data.images, 'received');
             }
