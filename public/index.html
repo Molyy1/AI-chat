@@ -206,7 +206,11 @@
         .auth-box button:hover {
             background-color: #365899;
         }
-
+        
+        .logout {
+           color: red;
+        }
+  
         .auth-toggle {
             margin-top: 10px;
         }
@@ -240,6 +244,7 @@
 <div class="dropdown" id="dropdown">
     <a href="#" onclick="showContainer('chat')">Chat with AI</a>
     <a href="#" onclick="showContainer('about')">About</a>
+    <a href="#" onclick="logout()">Logout</a>
 </div>
 
 <!-- Chat container -->
@@ -257,6 +262,9 @@
 <div id="about" class="about-container container">
     <h2>About this AI Chatbot</h2>
     <p>This chatbot allows users to chat with an AI and receive text or image-based responses. Built with a modern user interface, it is designed for a seamless experience.</p>
+    <p>©<span id="year"></span> AI Chatbot. All rights reserved.</p>
+    <p>*******************************************************</p>
+    <p>*******************************************************</p>
 </div>
 
 <script>
@@ -293,7 +301,7 @@
                 showContainer('chat');
                 document.querySelector('.chat-input').style.display = 'flex';
             } else {
-                alert('Invalid login credentials');
+                alert('Invalid username or pasword');
             }
         } else {
             if (username && password) {
@@ -312,24 +320,35 @@
     }
 
     function toggleDropdown() {
-        const dropdown = document.getElementById('dropdown');
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    }
+    const dropdown = document.getElementById('dropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+}
 
-    function showContainer(containerId) {
-        const containers = document.querySelectorAll('.container');
-        containers.forEach(container => container.classList.remove('active'));
+function showContainer(containerId) {
+    const containers = document.querySelectorAll('.container');
+    containers.forEach(container => container.classList.remove('active'));
 
-        const selectedContainer = document.getElementById(containerId);
-        selectedContainer.classList.add('active');
+    const selectedContainer = document.getElementById(containerId);
+    selectedContainer.classList.add('active');
 
-        // Hide dropdown after selection
-        toggleDropdown();
+    // Hide dropdown after selection (make sure it doesn’t stay open)
+    const dropdown = document.getElementById('dropdown');
+    dropdown.style.display = 'none';
 
-        // Hide the login screen after authentication
-        document.getElementById('auth-container').style.display = 'none';
-        document.querySelector('.menu').style.display = 'flex';
-    }
+    // Hide the login screen after authentication
+    document.getElementById('auth-container').style.display = 'none';
+    document.querySelector('.menu').style.display = 'flex';
+}
+
+  function logout() {
+    localStorage.removeItem('currentUser');
+    document.getElementById('auth-container').style.display = 'flex';  // Show login
+    document.querySelector('.menu').style.display = 'none';           // Hide hamburger menu
+    document.querySelector('.chat-input').style.display = 'none';     // Hide chat input
+    document.getElementById('dropdown').style.display = 'none';       // Hide dropdown
+    document.querySelectorAll('.container').forEach(container => container.classList.remove('active'));  // Hide other containers
+}
+
 
     function displayMessage(text, sender) {
         const chatContainer = document.getElementById('chat-container');
@@ -389,6 +408,14 @@
         textarea.style.height = 'auto';
         textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
     }
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Auto login if already logged in
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+        showContainer('chat');
+        document.querySelector('.chat-input').style.display = 'flex';
+    }
 </script>
 </body>
-</html>
+</html
