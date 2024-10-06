@@ -133,7 +133,7 @@
         }
 
      .copy-btn {
-         position: ralative;
+         position: absolute;
          bottom: 5px;  /* Keep it aligned with the left side of the message */
          left: 10px;    /* Positions the button at the right corner */
          background-color: #4267B2;
@@ -154,6 +154,10 @@
      .copy-btn:focus {
          outline: none;
     }
+     .message {
+         padding-bottom: 30px; /* Add enough space at the bottom for the copy button */
+         position: relative;   /* Make the button's absolute positioning work inside the message */
+     }
 
         .chat-input {
             display: none;
