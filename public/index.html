@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot</title>
+    <title>AI Chat with Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -126,27 +126,32 @@
             margin-top: 5px;
         }
     
-        .message {
+        .message.received {
            position: relative;
-           padding-bottom: 10px; /* Add extra space at the bottom for the button */
-        }
+           display: flex;
+           flex-direction: column;
+           justify-content: space-between; /* Ensure content is spaced evenly */
+           min-height: 60px; /* Ensure a minimum height for very short messages */
+         padding-bottom: 30px; /* Ensure there's space for the button */
+}
 
-        .copy-btn {
-          position: absolute;
-          left: 10px; /* Align to the left */
-          bottom: 10px; /* Ensure it's always at the bottom of the message */
-          background-color: #4267B2;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          padding: 5px 10px;
-          font-size: 12px;
-          cursor: pointer;
-      }
+   .copy-btn {
+        align-self: flex-start; /* Align to the left */
+        position: absolute;
+    left: 10px;
+    bottom: 10px; /* Stick to the bottom */
+    background-color: #4267B2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
 
-       .copy-btn:hover {
-          background-color: #365899;
-     }
+.copy-btn:hover {
+    background-color: #365899;
+}
 
         .chat-input {
             display: none;
