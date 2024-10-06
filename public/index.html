@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat with Login</title>
+    <title>AI Chatbot</title>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -126,15 +126,15 @@
             margin-top: 5px;
         }
     
-        .message.received {
+        .message {
            position: relative;
+           padding-bottom: 40px; /* Add extra space at the bottom for the button */
         }
 
         .copy-btn {
           position: absolute;
-          right: 10px;
-          top: 50%;
-          transform: translateY(-50%);
+          left: 10px; /* Align to the left */
+          bottom: 10px; /* Ensure it's always at the bottom of the message */
           background-color: #4267B2;
           color: white;
           border: none;
@@ -142,11 +142,11 @@
           padding: 5px 10px;
           font-size: 12px;
           cursor: pointer;
-       }
+      }
 
        .copy-btn:hover {
           background-color: #365899;
-       }
+     }
 
         .chat-input {
             display: none;
@@ -466,4 +466,4 @@ function copyToClipboard(text) {
     }
 </script>
 </body>
-</html
+</html>
