@@ -106,7 +106,7 @@
             bottom: 0;
             padding: 10px;
             border-radius: 20px;
-            margin-bottom: 1px; /*touch */
+            margin-bottom: 10px;
             max-width: 70%;
             word-wrap: break-word;
             white-space: pre-wrap;
@@ -128,7 +128,7 @@
             border-radius: 10px;
             margin-top: 5px;
         }
-
+    
       .message.received {
          margin-bottom: 50px;
          scroll-behavior: smooth;
@@ -140,8 +140,8 @@
      .copy-btn {
          position: absolute;
          overflow: scroll;  /*scroll until bottom */
-         bottom: -19px;    /* Positions the button at the bottom */
-         left: 10px;    /* Positions the button at the right corner */
+         bottom: -18px;    /* Positions the button at the bottom */
+         left: 11px;    /* Positions the button at the right corner */
          background-color: none;
          color: black;
          border: none;
@@ -149,11 +149,11 @@
          cursor: pointer;
          font-size: 14px;
     }
-
+    
     .copy-btn span {
         margin-right: 5px; /* Space between icon and text */
     }
-
+    
      .copy-btn:hover {
          background-color: white;
     }
@@ -246,11 +246,11 @@
         .auth-box button:hover {
             background-color: #365899;
         }
-
+        
         .logout {
            color: red;
         }
-
+  
         .auth-toggle {
             margin-top: 10px;
         }
@@ -400,7 +400,7 @@ function showContainer(containerId) {
 
     // Change button text to "Copied"
     button.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copied!';
-
+    
     // Revert "Copied" to "Copy" after 3 seconds
     setTimeout(() => {
         button.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
@@ -432,23 +432,26 @@ function displayMessage(text, sender) {
     messageDiv.className = 'message ' + sender;
 
     if (Array.isArray(text)) {
+        // If it's an array of images, display them without a copy button
         text.forEach(imgSrc => {
             const img = document.createElement('img');
             img.src = imgSrc;
+            img.alt = "AI response image";
             messageDiv.appendChild(img);
         });
     } else {
+        // Handle text messages
         messageDiv.textContent = text;
-    }
 
-    if (sender === 'received') {
-        const copyBtn = document.createElement('button');
-        copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
-        copyBtn.className = 'copy-btn';
-        copyBtn.onclick = function() {
-            copyToClipboard(text, copyBtn);
-        };
-        messageDiv.appendChild(copyBtn);
+        if (sender === 'received') {
+            const copyBtn = document.createElement('button');
+            copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
+            copyBtn.className = 'copy-btn';
+            copyBtn.onclick = function() {
+                copyToClipboard(text, copyBtn);
+            };
+            messageDiv.appendChild(copyBtn);
+        }
     }
 
     chatContainer.appendChild(messageDiv);
@@ -504,4 +507,4 @@ function displayMessage(text, sender) {
     }
 </script>
 </body>
-</html
+</html>
