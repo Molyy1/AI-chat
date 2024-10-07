@@ -98,11 +98,14 @@
             flex-direction: column;
             scroll-behavior: smooth;
             background-color: #f9f9f9;
+            margin-bottom: 50px;
+            position: relative;
         }
 
         .message {
-            padding: 10px 15px; /* Add bottom padding to accommodate the copy button */
-            border-radius: 15px;
+            bottom: 0;
+            padding: 10px;
+            border-radius: 20px;
             margin-bottom: 10px;
             max-width: 70%;
             word-wrap: break-word;
@@ -127,6 +130,8 @@
         }
     
       .message.received {
+         margin-bottom: 50px;
+         scroll-behavior: smooth;
          background-color: #f0f0f0;
          font-family: Arial, sans-serif;
          position: relative; /* Needed for the copy button */
@@ -134,16 +139,17 @@
 
      .copy-btn {
          position: absolute;
-         bottom: 5px;  /* Keep it aligned with the left side of the message */
+         overflow: scroll;
+         bottom: -25px;    /* Positions the button at the bottom */
          left: 10px;    /* Positions the button at the right corner */
          background-color: #4267B2;
          color: white;
          border: none;
-         border-radius: 5px;
+         border-radius: 4px;
          padding: 5px 10px;
          cursor: pointer;
          font-size: 12px;
-         font-familyb: 'Poppins', sans-serif;
+         font-family: 'Poppins', sans-serif;
          transition: background-color 0.3s;
     }
 
@@ -154,10 +160,6 @@
      .copy-btn:focus {
          outline: none;
     }
-     .message {
-         padding-bottom: 30px; /* Add enough space at the bottom for the copy button */
-         position: relative;   /* Make the button's absolute positioning work inside the message */
-     }
 
         .chat-input {
             display: none;
