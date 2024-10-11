@@ -97,7 +97,7 @@
             display: flex;
             flex-direction: column;
             scroll-behavior: smooth;
-            background-color: #f9f9f9;
+            background-color: #f2f2f2;
             margin-bottom: 50px;
             position: relative;
         }
@@ -107,7 +107,11 @@
             padding: 10px;
             border-radius: 20px;
             margin-bottom: 10px;
+            border-radius: 10px 10px 10px 0;
+            background-color: #f0f0f0;
             max-width: 70%;
+            font-size: 17px;
+            justify-content: flex-end;
             word-wrap: break-word;
             white-space: pre-wrap;
             position: relative;  /* Important for positioning the copy button */
@@ -130,18 +134,40 @@
         }
     
       .message.received {
-         margin-bottom: 50px;
-         scroll-behavior: smooth;
-         background-color: #f0f0f0;
-         font-family: Arial, sans-serif;
-         position: relative; /* Needed for the copy button */
+           margin-bottom: 50px;
+           scroll-behavior: smooth;
+           display:flex;
+           padding: 10px 15px;
+           border-radius: 10px 10px 10px 0;
+           background-color: #f9f9f9;
+           font-family: Arial, sans-serif;
+           position: relative; /* Needed for the copy button */
+           margin-left: 40px; /* Space for avatar */
         }
+
+     .avatar {
+          position: absolute;
+          width: 40px;
+          height: 40px;
+          align-self: flex-end;
+          border-radius: 50%;
+          left: 0; /* Align avatar to the left */
+          top: 0;
+          overflow: hidden;
+        }
+
+     .avatar img {
+         width: 100%;
+         height: 100%;
+         object-fit: cover;
+         border-radius: 40%;
+    }
 
      .copy-btn {
          position: absolute;
          overflow: scroll;  /*scroll until bottom */
-         bottom: -19px;    /* Positions the button at the bottom */
-         left: 11px;    /* Positions the button at the right corner */
+         bottom: -10px;    /* Positions the button at the bottom */
+         right: -2px;    /* Positions the button at the right corner */
          background-color: none;
          color: black;
          border: none;
@@ -161,6 +187,36 @@
      .copy-btn:focus {
          outline: none;
     }
+    
+       .button-container {
+           display: flex;
+           justify-content: flex-start; /* Align buttons to the left */
+           gap: 9px; /* Add small space between the buttons */
+           position: absolute;
+           bottom: -10px;
+           left: 0;
+       }
+
+        .icon-btn {
+           background: none;
+           border: none;
+           cursor: pointer;
+           padding: 0;
+           margin: 0;
+       }
+
+        .icon-btn span {
+            font-size: 20px; /* Adjust icon size as needed */
+            color: gray; /* Set the icon color */
+       }
+
+        .icon-btn:hover span {
+            color: black; /* Change color on hover */
+       }
+
+         .icon-btn:focus {
+            outline: none;
+       }
 
         .chat-input {
             display: none;
@@ -170,32 +226,43 @@
             background-color: white;
             position: fixed;
             bottom: 0;
+            resize: both;
             width: 100%;
             max-width: 600px;
             box-sizing: border-box;
             margin-bottom: 0px;
         }
-
+    
         .chat-input textarea {
             flex: 1;
-            padding: 3px;
+            padding: .2rem 1.25rem;
             border-radius: 20px;
-            border: 1px solid #ddd;
+            border: none;
+            scrollbar-width: none;
+            align-items: center;
             outline: none;
-            resize: none;
-            max-height: 100px;
+            gap: 10px;
+            font-size: 17px; /* Adjust font size for readability */
+            max-height: 150px;
+            color: #333333;
+            background-color: #f2f2f2;
             overflow-y: auto;
-            margin-bottom: 10px;
+            position: relative;
+            margin-bottom: -0px;
             width: 100%;
+            border: 1px solid  #f2f2f2;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
         }
-
+       
+        .chat-input textarea::-webkit-scrollbar {
+            display: none;
+        }
+    
         .chat-input button {
             background: none;
             border: none;
             cursor: pointer;
-            padding: 0 10px;
         }
 
         .chat-input button .material-symbols-outlined {
@@ -250,6 +317,12 @@
         .logout {
            color: red;
         }
+    
+       .bx-menu-dots {
+          justify-content: center;
+           width: 2.5rem;
+           display: flex      
+        }
   
         .auth-toggle {
             margin-top: 10px;
@@ -286,6 +359,12 @@
     <a href="#" onclick="showContainer('about')">About</a>
     <a href="#" onclick="logout()">Logout</a>
 </div>
+    
+    <div class="chatbox-wraper">
+        <div class="chatbox-tongle">
+            <l class="bx bx-menu-dots"></l>
+        </div>
+    </div>
 
 <!-- Chat container -->
 <div id="chat" class="chat-container container">
@@ -303,8 +382,14 @@
     <h2>About this AI Chatbot</h2>
     <p>This chatbot allows users to chat with an AI and receive text or image-based responses. Built with a modern user interface, it is designed for a seamless experience.</p>
     <p>©<span id="year"></span> AI Chatbot. All rights reserved.</p>
+                      <details>
+                         <summary>More</summary>
+        Creator Hassan
+                       </details>
+    <p href"https//:example.com">cantact</p>
     <p>*******************************************************</p>
-    <p>*******************************************************</p>
+    <progress></progress>
+    <p>***************</p>
 </div>
 
 <script>
@@ -399,7 +484,7 @@ function showContainer(containerId) {
     document.body.removeChild(textarea);
 
     // Change button text to "Copied"
-    button.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copied!';
+    button.innerHTML = '<span class="material-symbols-outlined" style="font-size: 15px;">content_copy</span> Copied!';
     
     // Revert "Copied" to "Copy" after 3 seconds
     setTimeout(() => {
@@ -432,7 +517,6 @@ function displayMessage(text, sender) {
     messageDiv.className = 'message ' + sender;
 
     if (Array.isArray(text)) {
-        // If it's an array of images, display them without a copy button
         text.forEach(imgSrc => {
             const img = document.createElement('img');
             img.src = imgSrc;
@@ -440,17 +524,51 @@ function displayMessage(text, sender) {
             messageDiv.appendChild(img);
         });
     } else {
-        // Handle text messages
         messageDiv.textContent = text;
 
         if (sender === 'received') {
+            // Create button container
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'button-container';
+
+                   if (sender === 'received') {
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'avatar';
+                const avatarImg = document.createElement('img');
+                avatarImg.src = 'image_1727285135680_1.jpg'; // Replace with the actual avatar URL
+                avatarDiv.appendChild(avatarImg);
+                messageDiv.appendChild(avatarDiv);
+            }
+
+            // Copy Button
             const copyBtn = document.createElement('button');
-            copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
-            copyBtn.className = 'copy-btn';
+            copyBtn.innerHTML = '<span class="material-symbols-outlined">content_copy</span>';
+            copyBtn.className = 'icon-btn';
             copyBtn.onclick = function() {
                 copyToClipboard(text, copyBtn);
             };
-            messageDiv.appendChild(copyBtn);
+            buttonContainer.appendChild(copyBtn);
+
+            // Like Button
+            const likeBtn = document.createElement('button');
+            likeBtn.innerHTML = '<span class="material-symbols-outlined">thumb_up</span>';
+            likeBtn.className = 'icon-btn';
+            likeBtn.onclick = function() {
+                alert('Liked!');
+            };
+            buttonContainer.appendChild(likeBtn);
+
+            // Dislike Button
+            const dislikeBtn = document.createElement('button');
+            dislikeBtn.innerHTML = '<span class="material-symbols-outlined">thumb_down</span>';
+            dislikeBtn.className = 'icon-btn';
+            dislikeBtn.onclick = function() {
+                alert('Disliked!');
+            };
+            buttonContainer.appendChild(dislikeBtn);
+
+            // Append button container to the message
+            messageDiv.appendChild(buttonContainer);
         }
     }
 
