@@ -134,26 +134,26 @@
         }
     
       .message.received {
-           margin-bottom: 50px;
-           scroll-behavior: smooth;
-           display:flex;
-           padding: 10px 15px;
-           border-radius: 10px 10px 10px 0;
-           background-color: #f9f9f9;
-           font-family: Arial, sans-serif;
-           position: relative; /* Needed for the copy button */
-           margin-left: 40px; /* Space for avatar */
+         margin-bottom: 10px;
+         scroll-behavior: smooth;
+         display: flex;
+         padding: 10px 15px;
+         border-radius: 10px 10px 10px 0;
+         background-color: #f9f9f9;
+         font-family: Arial, sans-serif;
+         position: relative;
+         margin-left: 60px; /* Space for avatar */
+         align-items: flex-end; /* Align message content to the bottom */
         }
 
      .avatar {
-          position: absolute;
-          width: 40px;
-          height: 40px;
-          align-self: flex-end;
-          border-radius: 50%;
-          left: 0; /* Align avatar to the left */
-          top: 0;
-          overflow: hidden;
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        left: -50px; /* Shift the avatar to the left of the message bubble */
+        bottom: 0; /* Keep the avatar aligned at the bottom */
+       overflow: hidden; 
         }
 
      .avatar img {
