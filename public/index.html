@@ -134,26 +134,26 @@
             margin-top: 5px;
         }
     
-       .message.received {
-          margin-bottom: 10px;
-          scroll-behavior: smooth;
-          display: flex;
-          padding: 10px 15px;
-          border-radius: 10px 10px 10px 0;
-          background-color: #f9f9f9;
-          font-family: Arial, sans-serif;
-          position: relative;
-          margin-left: 35px; /* Reduced space for the avatar */
-          align-items: flex-end; /* Align message content to the bottom */
-     }
+      .message.received {
+    margin-bottom: 10px;
+    scroll-behavior: smooth;
+    display: flex;
+    padding: 10px 15px;
+    border-radius: 10px 10px 10px 0;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+    position: relative;
+    margin-left: 20px; /* Reduced margin for less space between the avatar and message */
+    align-items: flex-end; /* Align message content to the bottom */
+}
 
 .avatar {
     position: absolute;
-    width: 25px; /* Smaller avatar size */
+    width: 25px; /* Small avatar size */
     height: 25px;
-    border-radius: 50%; /* Circle avatar */
-    left: -30px; /* Shift the avatar even closer to the corner */
-    bottom: 5px; /* Align at the bottom with some padding */
+    border-radius: 50%; /* Circular avatar */
+    left: -25px; /* Slight shift to the left, keeping it close to the message */
+    bottom: 5px; /* Align at the bottom */
     overflow: hidden;
 }
 
@@ -161,7 +161,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
+    border-radius: 50%; /* Ensure the avatar image stays circular */
 }
 
      .copy-btn {
