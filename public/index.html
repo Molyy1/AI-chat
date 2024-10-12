@@ -135,12 +135,12 @@
         }
     
       .message.received {
-    margin-bottom: 10px;
+          margin-bottom: 10px;
     scroll-behavior: smooth;
     display: flex;
     padding: 10px 15px;
     border-radius: 10px 10px 10px 0;
-    background-color: #f9f9f9;
+    background-color: #f0f0f0;
     font-family: Arial, sans-serif;
     position: relative;
     margin-left: 20px; /* Reduced margin for less space between the avatar and message */
@@ -149,8 +149,9 @@
 
 .avatar {
     position: absolute;
-    width: 25px; /* Small avatar size */
-    height: 25px;
+    width: 1rem; /* Small avatar size */
+    height: 1rem;
+    object-fit: cover;
     border-radius: 50%; /* Circular avatar */
     left: -25px; /* Slight shift to the left, keeping it close to the message */
     bottom: 5px; /* Align at the bottom */
