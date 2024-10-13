@@ -74,23 +74,24 @@
             display: block;
         }
 
-        .chat-container {
-            flex: 1;
-            max-width: 600px;
-            margin: 60px auto 0;
-            width: 100%;
-            height: calc(100vh - 60px);
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            background-color: #f9f9f9;
-            display: flex;
-            color: f9f9f9;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-
+        /* Chat container background (white) */
+.chat-container {
+    background-color: white;
+    flex: 1;
+    max-width: 600px;
+    margin: 60px auto 0;
+    width: 100%;
+    height: calc(100vh - 60px);
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    color: #333333;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+    
         .chat-messages {
             flex: 1;
             padding: 15px;
@@ -140,20 +141,21 @@
     display: flex;
     padding: 10px 15px;
     border-radius: 10px 10px 10px 0;
-          background-color: #f0f0f0;
+    background-color: #f0f0f0; /* Light gray background */
     font-family: Arial, sans-serif;
     position: relative;
+              color: #333333; /* Dark text */
     margin-left: 20px; /* Reduced margin for less space between the avatar and message */
     align-items: flex-end; /* Align message content to the bottom */
 }
 
 .avatar {
     position: absolute;
-    width: 2rem; /* Small avatar size */
-    height: 2rem;
+    width: 40px; /* Small avatar size */
+    height: 40px;
     object-fit: cover;
     border-radius: 50%; /* Circular avatar */
-    left: -23px; /* Slight shift to the left, keeping it close to the message */
+    left: -19px; /* Slight shift to the left, keeping it close to the message */
     bottom: 5px; /* Align at the bottom */
     overflow: hidden;
 }
