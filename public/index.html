@@ -92,41 +92,32 @@
         }
 
         .chat-messages {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            scroll-behavior: smooth;
-            background-color: #f9f9f9;
-            margin-bottom: 50px;
-            position: relative;
-        }
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    gap: 10px; /* Adds space between messages */
+}
 
-        .message {
-            bottom: 0;
-            padding: 10px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-            border-radius: 10px 10px 10px 0;
-            background-color: #f0f0f0;
-            max-width: 70%;
-            font-size: 17px;
-            justify-content: flex-end;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            position: relative;  /* Important for positioning the copy button */
-        }
+       .message {
+    display: inline-block;
+    word-wrap: break-word;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 10px 10px 10px 0;
+    margin-bottom: 10px;
+    max-width: 70%;
+    position: relative;
+    font-size: 17px;
+}
 
-        .message.sent {
-            background-color: #DCF8C6;
-            align-self: flex-end;
-        }
+.message.sent {
+    align-self: flex-end;
+    background-color: #DCF8C6;
+}
 
-        .message.received {
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-        }
+.message.received {
+    align-self: flex-start;
+}
 
         .message img {
             max-width: 100%;
@@ -150,12 +141,14 @@
     
      
          .message img {
-            max-width: 100%;
-            border-radius: 10px;
-            margin-top: 5px;
-        }
+    max-width: 100%; /* Ensures image doesn't exceed message bubble width */
+    height: auto; /* Keeps aspect ratio intact */
+    border-radius: 10px;
+    margin-top: 5px;
+    display: block; /* Ensures proper alignment inside the message */
+}
 
-    
+
      .copy-btn {
          position: absolute;
          overflow: scroll;  /*scroll until bottom */
