@@ -31,9 +31,9 @@
         }
 
         .menu .hamburger {
-            font-size: 24px;
-            color: black;
-            cursor: pointer;
+           font-size: 24px;
+           color: black;
+           cursor: pointer; 
         }
 
         .menu .title {
@@ -79,7 +79,6 @@
             max-width: 600px;
             margin: 60px auto 0;
             width: 100%;
-            overflow: scroll;
             height: calc(100vh - 60px);
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -92,32 +91,37 @@
         }
 
         .chat-messages {
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-    gap: 10px; /* Adds space between messages */
-}
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+            background-color: #f9f9f9;
+            margin-bottom: 50px;
+            position: relative;
+        }
 
-       .message {
-    display: inline-block;
-    word-wrap: break-word;
-    background-color: #f0f0f0;
-    padding: 10px;
-    border-radius: 10px 10px 10px 0;
-    margin-bottom: 10px;
-    max-width: 70%;
-    position: relative;
-    font-size: 17px;
-}
+        .message {
+            bottom: 0;
+            padding: 10px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            position: relative;  /* Important for positioning the copy button */
+        }
 
-.message.sent {
-    align-self: flex-end;
-    background-color: #DCF8C6;
-}
+        .message.sent {
+            background-color: #DCF8C6;
+            align-self: flex-end;
+        }
 
-.message.received {
-    align-self: flex-start;
-}
+        .message.received {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
 
         .message img {
             max-width: 100%;
@@ -126,28 +130,12 @@
         }
     
       .message.received {
-          margin-bottom: 10px;
-    scroll-behavior: smooth;
-    display: flex;
-    padding: 10px 15px;
-    border-radius: 10px;
-    background-color: #f0f0f0; /* Light gray background */
-    font-family: Arial, sans-serif;
-    position: relative;
-              color: #333333; /* Dark text */
-    margin-left: 20px; /* Reduced margin for less space between the avatar and message */
-    align-items: flex-end;
+         margin-bottom: 50px;
+         scroll-behavior: smooth;
+         background-color: #f0f0f0;
+         font-family: Arial, sans-serif;
+         position: relative; /* Needed for the copy button */
         }
-    
-     
-         .message img {
-    max-width: 100%; /* Ensures image doesn't exceed message bubble width */
-    height: auto; /* Keeps aspect ratio intact */
-    border-radius: 10px;
-    margin-top: 5px;
-    display: block; /* Ensures proper alignment inside the message */
-}
-
 
      .copy-btn {
          position: absolute;
@@ -189,25 +177,18 @@
         }
 
         .chat-input textarea {
-          flex: 1;
-            padding: .2rem 1.25rem;
+            flex: 1;
+            padding: 3px;
             border-radius: 20px;
-            border: none;
-            scrollbar-width: none;
-            align-items: center;
+            border: 1px solid #ddd;
             outline: none;
-            gap: 10px;
-            font-size: 17px; /* Adjust font size for readability */
-            max-height: 150px;
-            color: #333333;
-            background-color: #f2f2f2;
+            resize: none;
+            max-height: 100px;
             overflow-y: auto;
-            position: relative;
-            margin-bottom: -0px;
+            margin-bottom: 10px;
             width: 100%;
-            border: 1px solid  #f2f2f2;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         .chat-input button {
