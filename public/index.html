@@ -177,18 +177,25 @@
         }
 
         .chat-input textarea {
-            flex: 1;
-            padding: 3px;
+             flex: 1;
+            padding: .2rem 1.25rem;
             border-radius: 20px;
-            border: 1px solid #ddd;
+            border: none;
+            scrollbar-width: none;
+            align-items: center;
             outline: none;
-            resize: none;
-            max-height: 100px;
+            gap: 10px;
+            font-size: 17px; /* Adjust font size for readability */
+            max-height: 150px;
+            color: #333333;
+            background-color: #f2f2f2;
             overflow-y: auto;
-            margin-bottom: 10px;
+            position: relative;
+            margin-bottom: -0px;
             width: 100%;
+            border: 1px solid  #f2f2f2;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
         }
 
         .chat-input button {
