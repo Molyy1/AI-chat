@@ -466,16 +466,6 @@ function displayMessage(text, sender) {
             messageDiv.appendChild(img);
         });
     } else {
-     
-         if (sender === 'received') {
-                const avatarDiv = document.createElement('div');
-                avatarDiv.className = 'avatar';
-                const avatarImg = document.createElement('img');
-                avatarImg.src = 'https://i.imgur.com/U13TNag.jpeg'; // Replace with the actual avatar URL
-                avatarDiv.appendChild(avatarImg);
-                messageDiv.appendChild(avatarDiv);
-            }
-       
         // Handle text messages
         messageDiv.textContent = text;
 
