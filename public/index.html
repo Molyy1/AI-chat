@@ -31,9 +31,9 @@
         }
 
         .menu .hamburger {
-           font-size: 24px;
-           color: black;
-           cursor: pointer; 
+            font-size: 24px;
+            color: black;
+            cursor: pointer;
         }
 
         .menu .title {
@@ -177,7 +177,7 @@
         }
 
         .chat-input textarea {
-             flex: 1;
+            flex: 1;
             padding: .2rem 1.25rem;
             border-radius: 20px;
             border: none;
@@ -458,6 +458,27 @@ function displayMessage(text, sender) {
                 copyToClipboard(text, copyBtn);
             };
             messageDiv.appendChild(copyBtn);
+            
+            // Like Button
+           const likeBtn = document.createElement('button');
+            likeBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;"content_thumb_up</span> Like';
+            likeBtn.className = 'icon-btn';
+            likeBtn.onclick = function() {
+                alert('Liked!');
+            };
+            buttonContainer.appendChild(likeBtn);
+
+            // Dislike Button
+            const dislikeBtn = document.createElement('button');
+            dislikeBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14;"content_thumb_down</span> Dislike';
+            dislikeBtn.className = 'icon-btn';
+            dislikeBtn.onclick = function() {
+                alert('Disliked!');
+            };
+            buttonContainer.appendChild(dislikeBtn);
+
+            // Append button container to the message
+            messageDiv.appendChild(buttonContainer);
         }
     }
 
@@ -514,4 +535,4 @@ function displayMessage(text, sender) {
     }
 </script>
 </body>
-</html>
+</html
