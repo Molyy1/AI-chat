@@ -205,6 +205,28 @@
             padding: 0 10px;
         }
 
+       .button-container {
+    display: flex;
+    justify-content: space-between;  /* Aligns buttons in a line */
+    position: absolute;
+    bottom: 5px;  /* Adjust as needed to position at the bottom */
+    left: 10px;   /* Aligns inside the message box */
+    width: 100px; /* Set a width to align them properly */
+}
+
+.button-container button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #888;
+    font-size: 14px;
+}
+
+.button-container button:hover {
+    color: #4267B2;
+}
+
+
         .chat-input button .material-symbols-outlined {
             font-size: 24px;
             color: #4267B2;
