@@ -12,9 +12,9 @@
             background-color: #f0f2f5;
             margin: 0;
             height: 100vh;
+            overflow-y: hidden;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Prevent body overflow */
         }
 
         .menu {
@@ -26,8 +26,10 @@
             color: white;
             position: fixed;
             top: 0;
+            overflow-y: scrool;
+            bottom: 89%;
             width: 100%;
-            z-index: 1000;
+            z-index: 1;
             box-sizing: border-box;
         }
 
@@ -80,7 +82,7 @@
             max-width: 600px;
             margin: 60px auto 0;
             width: 100%;
-            height: calc(100vh - 60px); /* Adjusts to the screen height */
+            height: calc(100vh - 60px);
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             background-color: white;
@@ -89,21 +91,19 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
-}
+        }
 
-.chat-messages {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto; /* Ensures scrolling */
-    display: flex;
-    flex-direction: column;
-    scroll-behavior: smooth; /* Smooth scrolling */
-    background-color: #f9f9f9;
-    margin-bottom: 50px;
-    position: relative;
-    max-height: 100%; /* Ensures it stays within the container */
-}
-
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+            background-color: #f9f9f9;
+            margin-bottom: 50px;
+            position: relative;
+        }
 
         .message {
             bottom: 0;
@@ -207,28 +207,6 @@
             cursor: pointer;
             padding: 0 10px;
         }
-
-       .button-container {
-    display: flex;
-    justify-content: space-between;  /* Aligns buttons in a line */
-    position: absolute;
-    bottom: 5px;  /* Adjust as needed to position at the bottom */
-    left: 10px;   /* Aligns inside the message box */
-    width: 100px; /* Set a width to align them properly */
-}
-
-.button-container button {
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: #888;
-    font-size: 14px;
-}
-
-.button-container button:hover {
-    color: #4267B2;
-}
-
 
         .chat-input button .material-symbols-outlined {
             font-size: 24px;
@@ -390,12 +368,35 @@
             }
         }
     }
+  
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatMessages = document.getElementById('chat-messages');
+        const dropdown = document.getElementById('dropdown');
+
+        // Prevents full page refresh when scrolling in chat container
+        chatMessages.addEventListener('scroll', (event) => {
+            event.stopPropagation();  // Stops the scroll event from bubbling up
+        });
+
+        // Triggers a refresh only within the dropdown menu when scrolled to top
+        dropdown.addEventListener('scroll', () => {
+            if (dropdown.scrollTop === 0) {
+                refreshMenuOnly();  // Call function to refresh menu content
+            }
+        });
+    });
 
     function toggleDropdown() {
     const dropdown = document.getElementById('dropdown');
     dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 }
 
+  function refreshMenuOnly() {
+        // Add logic here to refresh menu items without reloading the whole app
+        console.log("Menu refreshed");
+        // Optionally: you could fetch new data or update specific elements within the dropdown
+    }
+  
 function showContainer(containerId) {
     const containers = document.querySelectorAll('.container');
     containers.forEach(container => container.classList.remove('active'));
@@ -483,32 +484,11 @@ function displayMessage(text, sender) {
                 copyToClipboard(text, copyBtn);
             };
             messageDiv.appendChild(copyBtn);
-            
-            // Like Button
-           const likeBtn = document.createElement('button');
-            likeBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;"content_thumb_up</span> Like';
-            likeBtn.className = 'icon-btn';
-            likeBtn.onclick = function() {
-                alert('Liked!');
-            };
-            buttonContainer.appendChild(likeBtn);
-
-            // Dislike Button
-            const dislikeBtn = document.createElement('button');
-            dislikeBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14;"content_thumb_down</span> Dislike';
-            dislikeBtn.className = 'icon-btn';
-            dislikeBtn.onclick = function() {
-                alert('Disliked!');
-            };
-            buttonContainer.appendChild(dislikeBtn);
-
-            // Append button container to the message
-            messageDiv.appendChild(buttonContainer);
         }
     }
 
- chatContainer.appendChild(messageDiv);
-    chatContainer.scrollTop = chatContainer.scrollToBottom;
+    chatContainer.appendChild(messageDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
     function sendMessage() {
@@ -545,6 +525,15 @@ function displayMessage(text, sender) {
         autoResize(this);
         document.querySelector('.chat-input button').disabled = this.value.trim().length === 0;
     });
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    const chatMessages = document.getElementById('chat-container');
+
+    // Prevent scroll from affecting the whole app
+    chatMessages.addEventListener('scroll', (event) => {
+        event.stopPropagation();
+    });
+});
 
     function autoResize(textarea) {
         textarea.style.height = 'auto';
@@ -560,5 +549,4 @@ function displayMessage(text, sender) {
     }
 </script>
 </body>
-</html
-
+</html>
