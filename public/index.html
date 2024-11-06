@@ -12,7 +12,6 @@
             background-color: #f0f2f5;
             margin: 0;
             height: 100vh;
-            overflow-y: hidden;
             display: flex;
             flex-direction: column;
         }
@@ -102,7 +101,6 @@
             scroll-behavior: smooth;
             background-color: #f9f9f9;
             margin-bottom: 50px;
-            position: relative;
         }
 
         .message {
@@ -510,6 +508,31 @@ function addMessage(text) {
 setInterval(() => {
   addMessage("New message arrived!");
 }, 3000);
+
+    const chatMessages = document.getElementById('chat-container');
+let userScrolledUp = false;
+
+// Detect user scrolls up in the chat-messages container
+chatMessages.addEventListener('scroll', () => {
+    if (chatMessages.scrollTop < chatMessages.scrollHeight - chatMessages.clientHeight) {
+        userScrolledUp = true;
+    } else {
+        userScrolledUp = false;
+    }
+});
+
+// Scroll to the bottom when a new message arrives, unless the user scrolled up
+function addMessageToChat(content) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+    messageElement.textContent = content;
+    chatMessages.appendChild(messageElement);
+
+    // Only auto-scroll if the user hasn’t scrolled up
+    if (!userScrolledUp) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+}
 
     function sendMessage() {
         const textarea = document.getElementById('user-input');
