@@ -475,33 +475,41 @@ function displayMessage(text, sender) {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
  
-    const chatMessages = document.getElementById('chat-container');
+    const chatContainer = document.getElementById("chat-container");
 
-    function sendMessage() {
-        // Code for sending the message goes here
+// Check if the user is at the bottom of the chat
+function isAtBottom() {
+  return chatContainer.scrollHeight - chatContainer.scrollTop === chatContainer.clientHeight;
+}
 
-        // After the message is sent, check the scroll position
-        checkScroll();
-    }
+// Function to handle new messages
+function handleNewMessage(message) {
+  // Add the new message to the chat container
+  chatContainer.appendChild(message);
 
-    function checkScroll() {
-        // If the user is at the bottom, scroll to the bottom of the chat
-        const isAtBottom = chatMessages.scrollTop + chatMessages.clientHeight >= chatMessages.scrollHeight - 10;
-        
-        if (isAtBottom) {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-    }
+  // If you're at the bottom, scroll to the new message
+  if (isAtBottom()) {
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+}
 
-    // Event listener for message additions (e.g., after receiving/sending messages)
-    function addMessage(content, isSent = true) {
-        const message = document.createElement('div');
-        message.className = `message ${isSent ? 'sent' : 'received'}`;
-        message.textContent = content;
-        chatMessages.appendChild(message);
+// Optional: Prevent auto-refresh on scroll events to avoid jumping
+window.addEventListener("scroll", (event) => {
+  event.preventDefault();
+}, false);
 
-        checkScroll();
-    }
+// Function to simulate adding a message
+function addMessage(text) {
+  const message = document.createElement("div");
+  message.className = "message";
+  message.innerText = text;
+  handleNewMessage(message);
+}
+
+// Example: Simulate a new message arriving every few seconds
+setInterval(() => {
+  addMessage("New message arrived!");
+}, 3000);
 
     function sendMessage() {
         const textarea = document.getElementById('user-input');
