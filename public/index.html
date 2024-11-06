@@ -369,22 +369,6 @@
         }
     }
   
-    document.addEventListener('DOMContentLoaded', function() {
-        const chatMessages = document.getElementById('chat-messages');
-        const dropdown = document.getElementById('dropdown');
-
-        // Prevents full page refresh when scrolling in chat container
-        chatMessages.addEventListener('scroll', (event) => {
-            event.stopPropagation();  // Stops the scroll event from bubbling up
-        });
-
-        // Triggers a refresh only within the dropdown menu when scrolled to top
-        dropdown.addEventListener('scroll', () => {
-            if (dropdown.scrollTop === 0) {
-                refreshMenuOnly();  // Call function to refresh menu content
-            }
-        });
-    });
 
     function toggleDropdown() {
     const dropdown = document.getElementById('dropdown');
@@ -490,6 +474,34 @@ function displayMessage(text, sender) {
     chatContainer.appendChild(messageDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
+ 
+    const chatMessages = document.getElementById('chat-container');
+
+    function sendMessage() {
+        // Code for sending the message goes here
+
+        // After the message is sent, check the scroll position
+        checkScroll();
+    }
+
+    function checkScroll() {
+        // If the user is at the bottom, scroll to the bottom of the chat
+        const isAtBottom = chatMessages.scrollTop + chatMessages.clientHeight >= chatMessages.scrollHeight - 10;
+        
+        if (isAtBottom) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+
+    // Event listener for message additions (e.g., after receiving/sending messages)
+    function addMessage(content, isSent = true) {
+        const message = document.createElement('div');
+        message.className = `message ${isSent ? 'sent' : 'received'}`;
+        message.textContent = content;
+        chatMessages.appendChild(message);
+
+        checkScroll();
+    }
 
     function sendMessage() {
         const textarea = document.getElementById('user-input');
