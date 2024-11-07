@@ -25,10 +25,8 @@
             color: white;
             position: fixed;
             top: 0;
-            overflow-y: scrool;
-            bottom: 89%;
             width: 100%;
-            z-index: 1;
+            z-index: 1000;
             box-sizing: border-box;
         }
 
@@ -97,10 +95,11 @@
             padding: 15px;
             overflow-y: auto;
             display: flex;
-            flex-direction: column;
+            flex-direction: column-reverse; /* Reverses the order, oldest at the top */
             scroll-behavior: smooth;
             background-color: #f9f9f9;
             margin-bottom: 50px;
+            position: relative;
         }
 
         .message {
@@ -179,24 +178,17 @@
 
         .chat-input textarea {
             flex: 1;
-            padding: .2rem 1.25rem;
+            padding: 3px;
             border-radius: 20px;
-            border: none;
-            scrollbar-width: none;
-            align-items: center;
+            border: 1px solid #ddd;
             outline: none;
-            gap: 10px;
-            font-size: 17px; /* Adjust font size for readability */
-            max-height: 150px;
-            color: #333333;
-            background-color: #f2f2f2;
+            resize: none;
+            max-height: 100px;
             overflow-y: auto;
-            position: relative;
-            margin-bottom: -0px;
+            margin-bottom: 10px;
             width: 100%;
-            border: 1px solid  #f2f2f2;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         .chat-input button {
@@ -366,19 +358,12 @@
             }
         }
     }
-  
 
     function toggleDropdown() {
     const dropdown = document.getElementById('dropdown');
     dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 }
 
-  function refreshMenuOnly() {
-        // Add logic here to refresh menu items without reloading the whole app
-        console.log("Menu refreshed");
-        // Optionally: you could fetch new data or update specific elements within the dropdown
-    }
-  
 function showContainer(containerId) {
     const containers = document.querySelectorAll('.container');
     containers.forEach(container => container.classList.remove('active'));
@@ -473,28 +458,18 @@ function displayMessage(text, sender) {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-      function sendMessage() {
-    const chatContainer = document.getElementById('chat-container');
-    const userInput = document.getElementById('user-input');
-    const messageText = userInput.value.trim();
+    function sendMessage() {
+        const textarea = document.getElementById('user-input');
+        const userInput = textarea.value.trim();
+        if (userInput) {
+            displayMessage(userInput, 'sent');
+            textarea.value = '';
+            autoResize(textarea);
+            document.querySelector('.chat-input button').disabled = true;
 
-    if (messageText !== "") {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message', 'sent');
-        messageElement.textContent = messageText;
-
-        chatContainer.appendChild(messageElement);
-        userInput.value = ""; // Clear input
-
-        // Check if the user is near the bottom
-        const isNearBottom = chatContainer.scrollHeight - chatContainer.scrollTop <= chatContainer.clientHeight + 50;
-
-        // Scroll to bottom only if the user was already near the bottom
-        if (isNearBottom) {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            fetchChatResponse(userInput);
         }
     }
-}
 
     async function fetchChatResponse(userInput) {
         try {
@@ -517,15 +492,6 @@ function displayMessage(text, sender) {
         autoResize(this);
         document.querySelector('.chat-input button').disabled = this.value.trim().length === 0;
     });
-  
-  document.addEventListener('DOMContentLoaded', function() {
-    const chatMessages = document.getElementById('chat-container');
-
-    // Prevent scroll from affecting the whole app
-    chatMessages.addEventListener('scroll', (event) => {
-        event.stopPropagation();
-    });
-});
 
     function autoResize(textarea) {
         textarea.style.height = 'auto';
@@ -539,6 +505,45 @@ function displayMessage(text, sender) {
         showContainer('chat');
         document.querySelector('.chat-input').style.display = 'flex';
     }
+    
+    // Get the chat container
+   const chatContainer = document.getElementById('chat-container');
+
+// Prevent the page from refreshing when scrolling to the top of chat messages
+chatContainer.addEventListener('scroll', (event) => {
+    if (chatContainer.scrollTop === 0) {
+        event.preventDefault();
+        // Load older messages or display a loading indicator if needed
+        console.log("Reached top of messages");
+    }
+});
+
+// Ensure scroll stays at the bottom when new messages are added
+function sendMessage() {
+    const textarea = document.getElementById('user-input');
+    const messageContent = textarea.value.trim();
+    if (messageContent === "") return;
+
+    const message = document.createElement('div');
+    message.classList.add('message', 'sent');
+    message.innerText = messageContent;
+    chatContainer.appendChild(message);
+
+    // Scroll smoothly to the bottom for new messages
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    textarea.value = "";
+}
+
+// Function to load more messages without auto-refreshing the app
+function loadMoreMessages() {
+    // Example: append older messages if needed, with smooth scroll in place
+    const oldMessage = document.createElement('div');
+    oldMessage.classList.add('message', 'received');
+    oldMessage.innerText = 'Older message';
+    chatContainer.prepend(oldMessage);
+}
+     
+
 </script>
 </body>
 </html>
