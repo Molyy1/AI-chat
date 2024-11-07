@@ -473,6 +473,7 @@ function displayMessage(text, sender) {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
  
+       
     const chatContainer = document.getElementById("chat-container");
 
 // Check if the user is at the bottom of the chat
@@ -503,11 +504,7 @@ function addMessage(text) {
   message.innerText = text;
   handleNewMessage(message);
 }
-
-// Example: Simulate a new message arriving every few seconds
-setInterval(() => {
-  addMessage("New message arrived!");
-}, 3000);
+    
 
     const chatMessages = document.getElementById('chat-container');
 let userScrolledUp = false;
@@ -535,17 +532,27 @@ function addMessageToChat(content) {
 }
 
     function sendMessage() {
-        const textarea = document.getElementById('user-input');
-        const userInput = textarea.value.trim();
-        if (userInput) {
-            displayMessage(userInput, 'sent');
-            textarea.value = '';
-            autoResize(textarea);
-            document.querySelector('.chat-input button').disabled = true;
+    const chatContainer = document.getElementById('chat-container');
+    const userInput = document.getElementById('user-input');
+    const messageText = userInput.value.trim();
 
-            fetchChatResponse(userInput);
+    if (messageText !== "") {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', 'sent');
+        messageElement.textContent = messageText;
+
+        chatContainer.appendChild(messageElement);
+        userInput.value = ""; // Clear input
+
+        // Check if the user is near the bottom
+        const isNearBottom = chatContainer.scrollHeight - chatContainer.scrollTop <= chatContainer.clientHeight + 50;
+
+        // Scroll to bottom only if the user was already near the bottom
+        if (isNearBottom) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
     }
+}
 
     async function fetchChatResponse(userInput) {
         try {
