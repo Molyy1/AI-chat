@@ -472,66 +472,8 @@ function displayMessage(text, sender) {
     chatContainer.appendChild(messageDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
- 
-       
-    const chatContainer = document.getElementById("chat-container");
 
-// Check if the user is at the bottom of the chat
-function isAtBottom() {
-  return chatContainer.scrollHeight - chatContainer.scrollTop === chatContainer.clientHeight;
-}
-
-// Function to handle new messages
-function handleNewMessage(message) {
-  // Add the new message to the chat container
-  chatContainer.appendChild(message);
-
-  // If you're at the bottom, scroll to the new message
-  if (isAtBottom()) {
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-  }
-}
-
-// Optional: Prevent auto-refresh on scroll events to avoid jumping
-window.addEventListener("scroll", (event) => {
-  event.preventDefault();
-}, false);
-
-// Function to simulate adding a message
-function addMessage(text) {
-  const message = document.createElement("div");
-  message.className = "message";
-  message.innerText = text;
-  handleNewMessage(message);
-}
-    
-
-    const chatMessages = document.getElementById('chat-container');
-let userScrolledUp = false;
-
-// Detect user scrolls up in the chat-messages container
-chatMessages.addEventListener('scroll', () => {
-    if (chatMessages.scrollTop < chatMessages.scrollHeight - chatMessages.clientHeight) {
-        userScrolledUp = true;
-    } else {
-        userScrolledUp = false;
-    }
-});
-
-// Scroll to the bottom when a new message arrives, unless the user scrolled up
-function addMessageToChat(content) {
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message');
-    messageElement.textContent = content;
-    chatMessages.appendChild(messageElement);
-
-    // Only auto-scroll if the user hasn’t scrolled up
-    if (!userScrolledUp) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-}
-
-    function sendMessage() {
+      function sendMessage() {
     const chatContainer = document.getElementById('chat-container');
     const userInput = document.getElementById('user-input');
     const messageText = userInput.value.trim();
