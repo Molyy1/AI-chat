@@ -31,9 +31,9 @@
         }
 
         .menu .hamburger {
-            font-size: 24px;
-            color: black;
-            cursor: pointer;
+           font-size: 24px;
+           color: black;
+           cursor: pointer; 
         }
 
         .menu .title {
@@ -95,7 +95,7 @@
             padding: 15px;
             overflow-y: auto;
             display: flex;
-            flex-direction: column-reverse; /* Reverses the order, oldest at the top */
+            flex-direction: column;
             scroll-behavior: smooth;
             background-color: #f9f9f9;
             margin-bottom: 50px;
@@ -177,18 +177,25 @@
         }
 
         .chat-input textarea {
-            flex: 1;
-            padding: 3px;
+             flex: 1;
+            padding: .2rem 1.25rem;
             border-radius: 20px;
-            border: 1px solid #ddd;
+            border: none;
+            scrollbar-width: none;
+            align-items: center;
             outline: none;
-            resize: none;
-            max-height: 100px;
+            gap: 10px;
+            font-size: 17px; /* Adjust font size for readability */
+            max-height: 150px;
+            color: #333333;
+            background-color: #f2f2f2;
             overflow-y: auto;
-            margin-bottom: 10px;
+            position: relative;
+            margin-bottom: -0px;
             width: 100%;
+            border: 1px solid  #f2f2f2;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
         }
 
         .chat-input button {
@@ -455,95 +462,84 @@ function displayMessage(text, sender) {
     }
 
     chatContainer.appendChild(messageDiv);
+scrollToBottom(); // Ensure scroll to bottom after adding a message
+}
+
+function scrollToBottom() {
+    const chatContainer = document.getElementById('chat-container');
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-    function sendMessage() {
-        const textarea = document.getElementById('user-input');
-        const userInput = textarea.value.trim();
-        if (userInput) {
-            displayMessage(userInput, 'sent');
-            textarea.value = '';
-            autoResize(textarea);
-            document.querySelector('.chat-input button').disabled = true;
+// Updated sendMessage function to ensure single definition
+function sendMessage() {
+    const textarea = document.getElementById('user-input');
+    const userInput = textarea.value.trim();
+    if (userInput) {
+        displayMessage(userInput, 'sent');
+        textarea.value = '';
+        autoResize(textarea);
+        document.querySelector('.chat-input button').disabled = true;
 
-            fetchChatResponse(userInput);
-        }
+        fetchChatResponse(userInput);
     }
-
-    async function fetchChatResponse(userInput) {
-        try {
-            const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
-            const data = await response.json();
-
-            if (data.message) {
-                displayMessage(data.message, 'received');
-            }
-
-            if (data.images) {
-                displayMessage(data.images, 'received');
-            }
-        } catch (error) {
-            console.error("Error fetching AI response:", error);
-        }
-    }
-
-    document.getElementById('user-input').addEventListener('input', function () {
-        autoResize(this);
-        document.querySelector('.chat-input button').disabled = this.value.trim().length === 0;
-    });
-
-    function autoResize(textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
-    }
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    // Auto login if already logged in
-    const currentUser = localStorage.getItem('currentUser');
-    if (currentUser) {
-        showContainer('chat');
-        document.querySelector('.chat-input').style.display = 'flex';
-    }
+}
     
-    // Get the chat container
-   const chatContainer = document.getElementById('chat-container');
-
-// Prevent the page from refreshing when scrolling to the top of chat messages
-chatContainer.addEventListener('scroll', (event) => {
-    if (chatContainer.scrollTop === 0) {
-        event.preventDefault();
-        // Load older messages or display a loading indicator if needed
-        console.log("Reached top of messages");
+    document.getElementById('chat-container').addEventListener('scroll', function() {
+    if (this.scrollTop === 0) {
+        // Load older messages here
+        loadOlderMessages();
     }
 });
 
-// Ensure scroll stays at the bottom when new messages are added
-function sendMessage() {
-    const textarea = document.getElementById('user-input');
-    const messageContent = textarea.value.trim();
-    if (messageContent === "") return;
-
-    const message = document.createElement('div');
-    message.classList.add('message', 'sent');
-    message.innerText = messageContent;
-    chatContainer.appendChild(message);
-
-    // Scroll smoothly to the bottom for new messages
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-    textarea.value = "";
+function loadOlderMessages() {
+    // Logic to fetch and display older messages
 }
 
-// Function to load more messages without auto-refreshing the app
-function loadMoreMessages() {
-    // Example: append older messages if needed, with smooth scroll in place
-    const oldMessage = document.createElement('div');
-    oldMessage.classList.add('message', 'received');
-    oldMessage.innerText = 'Older message';
-    chatContainer.prepend(oldMessage);
-}
-     
+// Prevent form submission on Enter key, send message instead
+document.getElementById('user-input').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission
+        sendMessage(); // Trigger send message function
+    }
+});
 
-</script>
+async function fetchChatResponse(userInput) {
+    try {
+        const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
+        const data = await response.json();
+
+        if (data.message) {
+            displayMessage(data.message, 'received');
+        }
+
+        if (data.images) {
+            displayMessage(data.images, 'received');
+        }
+    } catch (error) {
+        console.error("Error fetching AI response:", error);
+    }
+}
+
+// Enable or disable send button based on input
+document.getElementById('user-input').addEventListener('input', function () {
+    autoResize(this);
+    document.querySelector('.chat-input button').disabled = this.value.trim().length === 0;
+});
+
+function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
+}
+
+// Set current year
+document.getElementById("year").textContent = new Date().getFullYear();
+
+// Auto-login if already logged in
+const currentUser = localStorage.getItem('currentUser');
+if (currentUser) {
+    showContainer('chat');
+    document.querySelector('.chat-input').style.display = 'flex';
+}
+ </script>
 </body>
 </html>
