@@ -483,16 +483,39 @@ function sendMessage() {
         fetchChatResponse(userInput);
     }
 }
+
+// Detect if user scrolls to the top without refreshing the app
+let loadingOlderMessages = false;
+document.getElementById('chat-container').addEventListener('scroll', function() {
+    const chatContainer = document.getElementById('chat-container');
     
-    document.getElementById('chat-container').addEventListener('scroll', function() {
-    if (this.scrollTop === 0) {
-        // Load older messages here
-        loadOlderMessages();
+    // Only load older messages when scrolled to the top and not currently loading messages
+    if (chatContainer.scrollTop === 0 && !loadingOlderMessages) {
+        loadingOlderMessages = true; // Set loading state to prevent multiple triggers
+        loadOlderMessages().then(() => {
+            loadingOlderMessages = false; // Reset loading state after messages are loaded
+        });
     }
 });
 
-function loadOlderMessages() {
-    // Logic to fetch and display older messages
+async function loadOlderMessages() {
+    // Example of async loading logic
+    try {
+        // Mock delay to simulate loading time (optional)
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Append older messages (this is placeholder content)
+        const oldMessage = document.createElement('div');
+        oldMessage.className = 'message received';
+        oldMessage.textContent = "Older message";
+        const chatContainer = document.getElementById('chat-container');
+        chatContainer.insertBefore(oldMessage, chatContainer.firstChild);
+
+        // Adjust scroll position after adding older messages to avoid sudden jumps
+        chatContainer.scrollTop = oldMessage.offsetHeight;
+    } catch (error) {
+        console.error("Error loading older messages:", error);
+    }
 }
 
 // Prevent form submission on Enter key, send message instead
@@ -540,6 +563,6 @@ if (currentUser) {
     showContainer('chat');
     document.querySelector('.chat-input').style.display = 'flex';
 }
- </script>
+</script>
 </body>
 </html>
