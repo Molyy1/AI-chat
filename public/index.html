@@ -483,6 +483,16 @@ function sendMessage() {
         fetchChatResponse(userInput);
     }
 }
+  
+  const chatContainer = document.getElementById('chat-container');
+
+// Prevent pull-to-refresh by stopping scroll events at the top
+chatContainer.addEventListener('touchmove', (e) => {
+    if (chatContainer.scrollTop === 0) {
+        e.preventDefault();
+    }
+}, { passive: false });
+  
 
 // Detect if user scrolls to the top without refreshing the app
 let loadingOlderMessages = false;
@@ -525,7 +535,26 @@ document.getElementById('user-input').addEventListener('keypress', function(even
         sendMessage(); // Trigger send message function
     }
 });
+  
 
+  async function loadOlderMessages() {
+    try {
+        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate loading delay
+
+        const oldMessage = document.createElement('div');
+        oldMessage.className = 'message received';
+        oldMessage.textContent = "Older message loaded";
+        
+        const currentScrollHeight = chatContainer.scrollHeight;
+        chatContainer.insertBefore(oldMessage, chatContainer.firstChild);
+
+        // Smoothly adjust the scroll position
+        chatContainer.scrollTop += chatContainer.scrollHeight - currentScrollHeight;
+    } catch (error) {
+        console.error("Error loading older messages:", error);
+    }
+}
+  
 async function fetchChatResponse(userInput) {
     try {
         const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
