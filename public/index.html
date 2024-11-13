@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Chatbot</title>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -52,9 +52,9 @@
     align-items: center;
 }
 
-.title .material-icons {
+      .title .material-icons {
     font-size: 1.2rem; /* Adjust size as needed */
-    margin-left: 5px; /* Space between text and arrow */
+    margin-left: 6px; /* Space between text and arrow */
 }
 
         .dropdown {
@@ -220,14 +220,15 @@
             padding: 0 10px;
         }
 
-        .chat-input button .material-symbols-outlined {
-            font-size: 24px;
-            color: #4267B2;
-        }
+        .chat-input button i {
+    font-size: 24px; /* Adjust the size to make it larger */
+    color: #4267B2;  /* Color of the icon */
+}
 
-        .chat-input button:disabled .material-symbols-outlined {
-            color: #888;
-        }
+      .chat-input button:disabled i {
+    color: #888;
+}
+
 
         /* Auth container */
         .auth-container {
@@ -316,7 +317,7 @@
     <div class="chat-input">
         <textarea id="user-input" placeholder="Type your message..."></textarea>
         <button onclick="sendMessage()" disabled>
-            <span class="material-symbols-outlined">send</span>
+        <i class="fas fa-paper-plane"></i>
         </button>
     </div>
 </div>
@@ -422,11 +423,11 @@ function showContainer(containerId) {
     document.body.removeChild(textarea);
 
     // Change button text to "Copied"
-    button.innerHTML = '<span class="material-symbols-outlined" style="font-size: 15px;">content_copy</span> Copied!';
+    button.innerHTML = '<i class="fas fa-copy" style="font-size: 15px;">content_copy</span> Copied!';
     
     // Revert "Copied" to "Copy" after 3 seconds
     setTimeout(() => {
-        button.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
+        button.innerHTML = '<i class="fas fa-copy" style="font-size: 14px;">content_copy</span> Copy';
     }, 3000);
 }
 
@@ -442,7 +443,7 @@ function sendMessage() {
         // Revert all "Copied" buttons to "Copy" when a new message is sent
         const allCopyButtons = document.querySelectorAll('.copy-btn');
         allCopyButtons.forEach(button => {
-            button.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
+            button.innerHTML = '<i class="fas fa-copy" style="font-size: 14px;">content_copy</span> Copy';
         });
 
         fetchChatResponse(userInput);
