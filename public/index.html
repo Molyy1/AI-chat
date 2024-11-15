@@ -82,24 +82,27 @@
         .active {
             display: block;
         }
+        
 
      .chat-container {
-    flex: 1;
-    max-width: 600px;
-    margin: 20px auto 0; /* Top margin set to 20px */
-    width: 100%;
-    height: calc(100vh - 80px); /* Adjust height considering other elements */
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow-y: auto; /* Enable vertical scrolling */
-    overflow-x: hidden; /* Hide horizontal overflow */
-    z-index: 1;
-    padding-top: 60px; /* Corrected padding for top space */
-}
+           flex: 1;
+           max-width: 600px;
+           margin: 30px auto 0; /* Reduced top margin to 20px */
+           width: 100%;
+           height: calc(100vh - 80px); /* Adjusted height to account for the margin */
+           border-radius: 10px;
+           box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+           background-color: white;
+           display: flex;
+           flex-direction: column;
+           position: relative;
+           overflow: hidden;
+           z-index: 1;
+           padding-top: 60px; /* Corrected padding for top space */   
+      
+      }
+
+
 
 
 
