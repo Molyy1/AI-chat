@@ -82,14 +82,13 @@
         .active {
             display: block;
         }
-        
 
-     .chat-container {
+        .chat-container {
            flex: 1;
            max-width: 600px;
-           margin: 30px auto 0; /* Reduced top margin to 20px */
+           margin: 20px auto 0; /* Reduced top margin to 20px */
            width: 100%;
-           height: calc(100vh - 50px); /* Adjusted height to account for the margin */
+           height: calc(100vh - 80px); /* Adjusted height to account for the margin */
            border-radius: 10px;
            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
            background-color: white;
@@ -98,12 +97,8 @@
            position: relative;
            overflow: hidden;
            z-index: 1;
-           padding-top: 50px; /* Corrected padding for top space */
-      
-      }
-
-
-
+           padding-top: 60:px
+         }
 
 
         .chat-messages {
@@ -306,6 +301,7 @@
     <div class="hamburger" onclick="toggleDropdown()">☰</div>
     <div class="title">AI Chatbot &#9662;</div> <!-- Down arrow entity -->
 </div>
+    <div class="title">Welcome<span class="material-icons">once again!</span></div>
 <div class="dropdown" id="dropdown">
     <a href="#" onclick="showContainer('chat')">Chat with AI</a>
     <a href="#" onclick="showContainer('about')">About</a>
