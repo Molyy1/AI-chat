@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -31,9 +32,9 @@
         }
 
         .menu .hamburger {
-           font-size: 24px;
-           color: black;
-           cursor: pointer; 
+            font-size: 24px;
+            color: black;
+            cursor: pointer;
         }
 
         .menu .title {
@@ -44,17 +45,25 @@
             transform: translateX(-50%);
             margin: 0;
         }
+    
+         .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+         }
 
         .dropdown {
             display: none;
             background-color: #333;
             position: fixed;
             top: 50px;
-            width: 100%;
+            width: 60%;
+            left: 0;
             z-index: 999;
             box-sizing: border-box;
+            height: auto; /* Automatically adjust height */
+            border-radius: 0 7px 7px 0; /* Adds a rounded edge on the right side */
         }
-
+    
         .dropdown a {
             color: white;
             padding: 10px 15px;
@@ -75,20 +84,22 @@
         }
 
         .chat-container {
-            flex: 1;
-            max-width: 600px;
-            margin: 60px auto 0;
-            width: 100%;
-            height: calc(100vh - 60px);
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
+           flex: 1;
+           max-width: 600px;
+           margin: 20px auto 0; /* Reduced top margin to 20px */
+           width: 100%;
+           height: calc(100vh - 80px); /* Adjusted height to account for the margin */
+           border-radius: 10px;
+           box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+           background-color: white;
+           display: flex;
+           flex-direction: column;
+           position: relative;
+           overflow: hidden;
+           z-index: 1;
+           padding-top: 60:px
+         }
+
 
         .chat-messages {
             flex: 1;
@@ -177,7 +188,7 @@
         }
 
         .chat-input textarea {
-             flex: 1;
+            flex: 1;
             padding: .2rem 1.25rem;
             border-radius: 20px;
             border: none;
@@ -189,7 +200,7 @@
             max-height: 150px;
             color: #333333;
             background-color: #f2f2f2;
-            overflow-y: auto;
+            overflow-y: scroll;
             position: relative;
             margin-bottom: -0px;
             width: 100%;
@@ -198,21 +209,23 @@
             font-family: Arial, sans-serif;
         }
 
-        .chat-input button {
+        
+         .chat-input button {
             background: none;
             border: none;
             cursor: pointer;
             padding: 0 10px;
         }
 
-        .chat-input button .material-symbols-outlined {
-            font-size: 24px;
-            color: #4267B2;
-        }
+        .chat-input button i {
+    font-size: 24px; /* Adjust the size to make it larger */
+    color: #4267B2;  /* Color of the icon */
+}
 
-        .chat-input button:disabled .material-symbols-outlined {
-            color: #888;
-        }
+      .chat-input button:disabled i {
+    color: #888;
+}
+
 
         /* Auth container */
         .auth-container {
@@ -286,8 +299,9 @@
 
 <div class="menu">
     <div class="hamburger" onclick="toggleDropdown()">☰</div>
-    <div class="title">AI Chatbot</div>
+    <div class="title">AI Chatbot &#9662;</div> <!-- Down arrow entity -->
 </div>
+    <div class="title">ㅤㅤ ㅤㅤㅤ ㅤㅤㅤ<span class="material-icons">ㅤㅤ ㅤ</span></div>
 <div class="dropdown" id="dropdown">
     <a href="#" onclick="showContainer('chat')">Chat with AI</a>
     <a href="#" onclick="showContainer('about')">About</a>
@@ -300,7 +314,7 @@
     <div class="chat-input">
         <textarea id="user-input" placeholder="Type your message..."></textarea>
         <button onclick="sendMessage()" disabled>
-            <span class="material-symbols-outlined">send</span>
+              <i class="fas fa-paper-plane"></i>
         </button>
     </div>
 </div>
@@ -439,7 +453,7 @@ function displayMessage(text, sender) {
     messageDiv.className = 'message ' + sender;
 
     if (Array.isArray(text)) {
-        // If it's an array of images, display them without a copy button
+        // Display images without copy button
         text.forEach(imgSrc => {
             const img = document.createElement('img');
             img.src = imgSrc;
@@ -449,7 +463,6 @@ function displayMessage(text, sender) {
     } else {
         // Handle text messages
         messageDiv.textContent = text;
-
         if (sender === 'received') {
             const copyBtn = document.createElement('button');
             copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
@@ -462,136 +475,56 @@ function displayMessage(text, sender) {
     }
 
     chatContainer.appendChild(messageDiv);
-scrollToBottom(); // Ensure scroll to bottom after adding a message
+    chatContainer.scrollTop = chatContainer.scrollHeight; // Keep scroll at bottom
 }
-
-function scrollToBottom() {
-    const chatContainer = document.getElementById('chat-container');
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-}
-
-// Updated sendMessage function to ensure single definition
-function sendMessage() {
-    const textarea = document.getElementById('user-input');
-    const userInput = textarea.value.trim();
-    if (userInput) {
-        displayMessage(userInput, 'sent');
-        textarea.value = '';
-        autoResize(textarea);
-        document.querySelector('.chat-input button').disabled = true;
-
-        fetchChatResponse(userInput);
-    }
-}
-  
-  const chatContainer = document.getElementById('chat-container');
-
-// Prevent pull-to-refresh by stopping scroll events at the top
-chatContainer.addEventListener('touchmove', (e) => {
-    if (chatContainer.scrollTop === 0) {
-        e.preventDefault();
-    }
-}, { passive: false });
-  
-
-// Detect if user scrolls to the top without refreshing the app
-let loadingOlderMessages = false;
-document.getElementById('chat-container').addEventListener('scroll', function() {
-    const chatContainer = document.getElementById('chat-container');
     
-    // Only load older messages when scrolled to the top and not currently loading messages
-    if (chatContainer.scrollTop === 0 && !loadingOlderMessages) {
-        loadingOlderMessages = true; // Set loading state to prevent multiple triggers
-        loadOlderMessages().then(() => {
-            loadingOlderMessages = false; // Reset loading state after messages are loaded
-        });
-    }
-});
+    function sendMessage() {
+        const textarea = document.getElementById('user-input');
+        const userInput = textarea.value.trim();
+        if (userInput) {
+            displayMessage(userInput, 'sent');
+            textarea.value = '';
+            autoResize(textarea);
+            document.querySelector('.chat-input button').disabled = true;
 
-async function loadOlderMessages() {
-    // Example of async loading logic
-    try {
-        // Mock delay to simulate loading time (optional)
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        // Append older messages (this is placeholder content)
-        const oldMessage = document.createElement('div');
-        oldMessage.className = 'message received';
-        oldMessage.textContent = "Older message";
-        const chatContainer = document.getElementById('chat-container');
-        chatContainer.insertBefore(oldMessage, chatContainer.firstChild);
-
-        // Adjust scroll position after adding older messages to avoid sudden jumps
-        chatContainer.scrollTop = oldMessage.offsetHeight;
-    } catch (error) {
-        console.error("Error loading older messages:", error);
-    }
-}
-
-// Prevent form submission on Enter key, send message instead
-document.getElementById('user-input').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent form submission
-        sendMessage(); // Trigger send message function
-    }
-});
-  
-
-  async function loadOlderMessages() {
-    try {
-        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate loading delay
-
-        const oldMessage = document.createElement('div');
-        oldMessage.className = 'message received';
-        oldMessage.textContent = "Older message loaded";
-        
-        const currentScrollHeight = chatContainer.scrollHeight;
-        chatContainer.insertBefore(oldMessage, chatContainer.firstChild);
-
-        // Smoothly adjust the scroll position
-        chatContainer.scrollTop += chatContainer.scrollHeight - currentScrollHeight;
-    } catch (error) {
-        console.error("Error loading older messages:", error);
-    }
-}
-  
-async function fetchChatResponse(userInput) {
-    try {
-        const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
-        const data = await response.json();
-
-        if (data.message) {
-            displayMessage(data.message, 'received');
+            fetchChatResponse(userInput);
         }
-
-        if (data.images) {
-            displayMessage(data.images, 'received');
-        }
-    } catch (error) {
-        console.error("Error fetching AI response:", error);
     }
-}
 
-// Enable or disable send button based on input
-document.getElementById('user-input').addEventListener('input', function () {
-    autoResize(this);
-    document.querySelector('.chat-input button').disabled = this.value.trim().length === 0;
-});
+    async function fetchChatResponse(userInput) {
+        try {
+            const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
+            const data = await response.json();
 
-function autoResize(textarea) {
-    textarea.style.height = 'auto';
-    textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
-}
+            if (data.message) {
+                displayMessage(data.message, 'received');
+            }
 
-// Set current year
-document.getElementById("year").textContent = new Date().getFullYear();
+            if (data.images) {
+                displayMessage(data.images, 'received');
+            }
+        } catch (error) {
+            console.error("Error fetching AI response:", error);
+        }
+    }
 
-// Auto-login if already logged in
-const currentUser = localStorage.getItem('currentUser');
-if (currentUser) {
-    showContainer('chat');
-    document.querySelector('.chat-input').style.display = 'flex';
-}
+    document.getElementById('user-input').addEventListener('input', function () {
+        autoResize(this);
+        document.querySelector('.chat-input button').disabled = this.value.trim().length === 0;
+    });
+
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
+    }
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Auto login if already logged in
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+        showContainer('chat');
+        document.querySelector('.chat-input').style.display = 'flex';
+    }
 </script>
 </body>
 </html>
