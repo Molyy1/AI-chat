@@ -82,6 +82,66 @@
         .active {
             display: block;
         }
+    
+       /* Default hidden state for all containers */
+.container {
+    display: none;
+}
+
+/* Active container is displayed */
+.container.active {
+    display: block;
+}
+
+/* Contact container styling */
+.contact-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.contact-container h2 {
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #333;
+}
+
+.contact-container form input,
+.contact-container form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.contact-container form textarea {
+    resize: none;
+    height: 100px;
+}
+
+.contact-container form button {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.contact-container form button:hover {
+    background-color: #45a049;
+}
+    
 
         .chat-container {
            flex: 1;
@@ -99,6 +159,12 @@
            z-index: 1;
            padding-top: 60:px
          }
+
+        body, html {
+    margin: 0;
+    padding: 0;
+    background-color: white; /* Ensure the entire background matches */
+}
 
 
         .chat-messages {
@@ -301,10 +367,11 @@
     <div class="hamburger" onclick="toggleDropdown()">☰</div>
     <div class="title">AI Chatbot &#9662;</div> <!-- Down arrow entity -->
 </div>
-    <div class="title">Welcome once<span class="material-icons">again!</span></div>
+    <div class="title">ㅤㅤ ㅤㅤㅤ ㅤ<span class="material-icons">ㅤㅤ </span></div>
 <div class="dropdown" id="dropdown">
     <a href="#" onclick="showContainer('chat')">Chat with AI</a>
     <a href="#" onclick="showContainer('about')">About</a>
+    <a href="#" onclick="showContainer('contact')">Contact</a> <!-- New Contact link -->
     <a href="#" onclick="logout()">Logout</a>
 </div>
 
@@ -317,6 +384,18 @@
               <i class="fas fa-paper-plane"></i>
         </button>
     </div>
+</div>
+    
+    <!-- Contact container -->
+<!-- Contact container -->
+<div id="contact" class="contact-container container">
+    <h2>Contact Us</h2>
+    <form action="https://submit-form.com/qsWcFcGOc" method="POST" id="contact-form">
+        <input type="text" name="name" id="contact-name" placeholder="Your Name" required>
+        <input type="email" name="email" id="contact-email" placeholder="Your Email" required>
+        <textarea name="message" id="contact-message" placeholder="Your Message" required></textarea>
+        <button type="submit">Submit</button>
+    </form>
 </div>
 
 <!-- About container -->
@@ -386,13 +465,19 @@
 }
 
 function showContainer(containerId) {
+    // Hide all containers by removing the "active" class
     const containers = document.querySelectorAll('.container');
-    containers.forEach(container => container.classList.remove('active'));
+    containers.forEach(container => {
+        container.classList.remove('active');
+        container.style.display = 'none'; // Ensure it's fully hidden
+    });
 
+    // Show the selected container
     const selectedContainer = document.getElementById(containerId);
     selectedContainer.classList.add('active');
+    selectedContainer.style.display = 'block'; // Make it visible
 
-    // Hide dropdown after selection (make sure it doesn’t stay open)
+    // Hide the dropdown menu after selection
     const dropdown = document.getElementById('dropdown');
     dropdown.style.display = 'none';
 
@@ -401,15 +486,30 @@ function showContainer(containerId) {
     document.querySelector('.menu').style.display = 'flex';
 }
 
-  function logout() {
+function logout() {
+    // Clear user data and reset to login screen
     localStorage.removeItem('currentUser');
-    document.getElementById('auth-container').style.display = 'flex';  // Show login
-    document.querySelector('.menu').style.display = 'none';           // Hide hamburger menu
-    document.querySelector('.chat-input').style.display = 'none';     // Hide chat input
-    document.getElementById('dropdown').style.display = 'none';       // Hide dropdown
-    document.querySelectorAll('.container').forEach(container => container.classList.remove('active'));  // Hide other containers
+    document.getElementById('auth-container').style.display = 'flex'; // Show login
+    document.querySelector('.menu').style.display = 'none';          // Hide hamburger menu
+    document.querySelector('.chat-input').style.display = 'none';    // Hide chat input
+    document.getElementById('dropdown').style.display = 'none';      // Hide dropdown
+    document.querySelectorAll('.container').forEach(container => container.classList.remove('active')); // Hide all containers
 }
 
+function submitContact(event) {
+    event.preventDefault(); // Prevent default form submission for manual handling
+    const form = document.getElementById('contact-form');
+    const name = document.getElementById('contact-name').value.trim();
+    const email = document.getElementById('contact-email').value.trim();
+    const message = document.getElementById('contact-message').value.trim();
+
+    if (name && email && message) {
+        alert(`Thank you for reaching out, ${name}! We'll respond to your message soon.`);
+        form.reset(); // Clear form fields after submission
+    } else {
+        alert("Please fill out all fields before submitting.");
+    }
+}
 
     function copyToClipboard(text, button) {
     const textarea = document.createElement('textarea');
