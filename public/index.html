@@ -494,6 +494,9 @@ function logout() {
     document.querySelector('.chat-input').style.display = 'none';    // Hide chat input
     document.getElementById('dropdown').style.display = 'none';      // Hide dropdown
     document.querySelectorAll('.container').forEach(container => container.classList.remove('active')); // Hide all containers
+    
+    // Hide the contact container
+    document.getElementById('contact').style.display = 'none';
 }
 
 function submitContact(event) {
@@ -627,4 +630,4 @@ function displayMessage(text, sender) {
     }
 </script>
 </body>
-</html>
+</html
