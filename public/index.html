@@ -95,7 +95,7 @@
 
 /* Contact container styling */
 .contact-container {
-    display: flex;
+    display: none;
     flex-direction: column;
     gap: 15px;
     padding: 20px;
@@ -463,6 +463,22 @@
     const dropdown = document.getElementById('dropdown');
     dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 }
+    
+    function handleAuth() {
+    const username = document.getElementById('auth-username').value;
+    const password = document.getElementById('auth-password').value;
+
+    if (username && password) {
+        localStorage.setItem('currentUser', username); // Save user session
+        document.getElementById('auth-container').style.display = 'none'; // Hide login screen
+        document.querySelector('.menu').style.display = 'flex';           // Show hamburger menu
+        document.querySelector('.chat-input').style.display = 'flex';     // Show chat input
+        document.getElementById('dropdown').style.display = 'none';       // Keep dropdown hidden initially
+        document.getElementById('contact').style.display = 'block';       // Show contact container
+    } else {
+        alert('Please enter both username and password.');
+    }
+}
 
 function showContainer(containerId) {
     // Hide all containers by removing the "active" class
@@ -630,4 +646,4 @@ function displayMessage(text, sender) {
     }
 </script>
 </body>
-</html
+</html>
