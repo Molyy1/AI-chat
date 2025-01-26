@@ -82,6 +82,85 @@
         .active {
             display: block;
         }
+  
+  .contact-container {
+    display: none; /* Hidden by default */
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+  
+  .active {
+    display: block !important;
+}
+
+.contact-container h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.contact-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.contact-container input[type="email"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.contact-container button {
+    padding: 10px;
+    background-color: #4267B2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.contact-container button:hover {
+    background-color: #365899;
+}
+    .contact-container textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family: Arial, sans-serif;
+}
+
+.contact-container textarea:focus {
+    border-color: #4267B2;
+    outline: none;
+}
+
+.contact-container button {
+    padding: 10px 15px;
+    background-color: #4267B2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.contact-container button:hover {
+    background-color: #365899;
+}
 
         .chat-container {
            flex: 1;
@@ -305,7 +384,20 @@
 <div class="dropdown" id="dropdown">
     <a href="#" onclick="showContainer('chat')">Chat with AI</a>
     <a href="#" onclick="showContainer('about')">About</a>
+    <a href="#" onclick="showContainer('contact')">Contact</a>
     <a href="#" onclick="logout()">Logout</a>
+</div>
+
+<!-- Contact Us container -->
+<!-- Contact Us container -->
+<div id="contact" class="contact-container container">
+    <h2>Contact Us</h2>
+    <form action="https://submit-form.com/qsWcFcGOc" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email Address" required>
+        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+        <button type="submit">Submit</button>
+    </form>
 </div>
 
 <!-- Chat container -->
@@ -384,19 +476,16 @@
     const dropdown = document.getElementById('dropdown');
     dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 }
-
-function showContainer(containerId) {
+  function showContainer(containerId) {
     const containers = document.querySelectorAll('.container');
     containers.forEach(container => container.classList.remove('active'));
 
     const selectedContainer = document.getElementById(containerId);
     selectedContainer.classList.add('active');
 
-    // Hide dropdown after selection (make sure it doesn’t stay open)
     const dropdown = document.getElementById('dropdown');
     dropdown.style.display = 'none';
 
-    // Hide the login screen after authentication
     document.getElementById('auth-container').style.display = 'none';
     document.querySelector('.menu').style.display = 'flex';
 }
