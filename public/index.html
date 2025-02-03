@@ -61,7 +61,7 @@
             z-index: 999;
             box-sizing: border-box;
             height: auto; /* Automatically adjust height */
-            border-radius: 0 7px 7px 0; /* Adds a rounded edge on the right side */
+            border-radius: 0 7px 7px 0; 
         }
     
         .dropdown a {
@@ -86,9 +86,9 @@
         .chat-container {
            flex: 1;
            max-width: 600px;
-           margin: 20px auto 0; /* Reduced top margin to 20px */
+           margin: 20px auto 0; 
            width: 100%;
-           height: calc(100vh - 80px); /* Adjusted height to account for the margin */
+           height: calc(100vh - 80px);
            border-radius: 10px;
            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
            background-color: white;
@@ -308,7 +308,6 @@
     <a href="#" onclick="logout()">Logout</a>
 </div>
 
-<!-- Chat container -->
 <div id="chat" class="chat-container container">
     <div class="chat-messages" id="chat-container"></div>
     <div class="chat-input">
@@ -319,7 +318,6 @@
     </div>
 </div>
 
-<!-- About container -->
 <div id="about" class="about-container container">
     <h2>About this AI Chatbot</h2>
     <p>This chatbot allows users to chat with an AI and receive text or image-based responses. Built with a modern user interface, it is designed for a seamless experience.</p>
@@ -392,11 +390,9 @@ function showContainer(containerId) {
     const selectedContainer = document.getElementById(containerId);
     selectedContainer.classList.add('active');
 
-    // Hide dropdown after selection (make sure it doesn’t stay open)
     const dropdown = document.getElementById('dropdown');
     dropdown.style.display = 'none';
 
-    // Hide the login screen after authentication
     document.getElementById('auth-container').style.display = 'none';
     document.querySelector('.menu').style.display = 'flex';
 }
@@ -419,10 +415,8 @@ function showContainer(containerId) {
     document.execCommand('copy');
     document.body.removeChild(textarea);
 
-    // Change button text to "Copied"
     button.innerHTML = '<span class="material-symbols-outlined" style="font-size: 15px;">content_copy</span> Copied!';
     
-    // Revert "Copied" to "Copy" after 3 seconds
     setTimeout(() => {
         button.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
     }, 3000);
@@ -437,7 +431,6 @@ function sendMessage() {
         autoResize(textarea);
         document.querySelector('.chat-input button').disabled = true;
 
-        // Revert all "Copied" buttons to "Copy" when a new message is sent
         const allCopyButtons = document.querySelectorAll('.copy-btn');
         allCopyButtons.forEach(button => {
             button.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
@@ -453,7 +446,6 @@ function displayMessage(text, sender) {
     messageDiv.className = 'message ' + sender;
 
     if (Array.isArray(text)) {
-        // Display images without copy button
         text.forEach(imgSrc => {
             const img = document.createElement('img');
             img.src = imgSrc;
@@ -461,7 +453,6 @@ function displayMessage(text, sender) {
             messageDiv.appendChild(img);
         });
     } else {
-        // Handle text messages
         messageDiv.textContent = text;
         if (sender === 'received') {
             const copyBtn = document.createElement('button');
@@ -519,7 +510,6 @@ function displayMessage(text, sender) {
     }
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Auto login if already logged in
     const currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
         showContainer('chat');
