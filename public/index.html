@@ -279,6 +279,7 @@
             color: #4267B2;
             text-decoration: none;
         }
+  
 
     </style>
 </head>
@@ -307,6 +308,20 @@
     <a href="#" onclick="showContainer('about')">About</a>
     <a href="#" onclick="logout()">Logout</a>
 </div>
+  
+  <input type="range" id="scroll-slider" min="0" max="100" value="100" step="1" orient="vertical" style="
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    height: calc(100% - 20px);
+    width: 8px;
+    writing-mode: bt-lr;
+    transform: rotate(180deg);
+    z-index: 10;
+    background: #ddd;
+    border-radius: 10px;
+    outline: none;
+">
 
 <div id="chat" class="chat-container container">
     <div class="chat-messages" id="chat-container"></div>
@@ -515,6 +530,22 @@ function displayMessage(text, sender) {
         showContainer('chat');
         document.querySelector('.chat-input').style.display = 'flex';
     }
+  
+  const chatMessages = document.getElementById("chat-container");
+const scrollSlider = document.getElementById("scroll-slider");
+
+// Update chat scroll when slider is moved
+scrollSlider.addEventListener("input", () => {
+    const scrollMax = chatMessages.scrollHeight - chatMessages.clientHeight;
+    chatMessages.scrollTop = (scrollSlider.value / 100) * scrollMax;
+});
+
+// Update slider position when user scrolls manually
+chatMessages.addEventListener("scroll", () => {
+    const scrollMax = chatMessages.scrollHeight - chatMessages.clientHeight;
+    const scrollPercent = (chatMessages.scrollTop / scrollMax) * 100;
+    scrollSlider.value = scrollPercent;
+});
 </script>
 </body>
 </html>
