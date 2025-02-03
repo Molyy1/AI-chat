@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -82,6 +81,11 @@
         .active {
             display: block;
         }
+  
+         .chat-container {
+    overflow-y: auto;
+    scroll-behavior: smooth; /* Prevents jumpy scrolling */
+}
 
         .chat-container {
            flex: 1;
@@ -308,20 +312,6 @@
     <a href="#" onclick="showContainer('about')">About</a>
     <a href="#" onclick="logout()">Logout</a>
 </div>
-  
-  <input type="range" id="scroll-slider" min="0" max="100" value="100" step="1" orient="vertical" style="
-    position: absolute;
-    right: 5px;
-    top: 10px;
-    height: calc(100% - 20px);
-    width: 8px;
-    writing-mode: bt-lr;
-    transform: rotate(180deg);
-    z-index: 10;
-    background: #ddd;
-    border-radius: 10px;
-    outline: none;
-">
 
 <div id="chat" class="chat-container container">
     <div class="chat-messages" id="chat-container"></div>
@@ -531,21 +521,32 @@ function displayMessage(text, sender) {
         document.querySelector('.chat-input').style.display = 'flex';
     }
   
-  const chatMessages = document.getElementById("chat-container");
-const scrollSlider = document.getElementById("scroll-slider");
+  
+const chatContainer = document.querySelector(".chat-container");
 
-// Update chat scroll when slider is moved
-scrollSlider.addEventListener("input", () => {
-    const scrollMax = chatMessages.scrollHeight - chatMessages.clientHeight;
-    chatMessages.scrollTop = (scrollSlider.value / 100) * scrollMax;
+let isUserScrolling = false;
+
+chatContainer.addEventListener("scroll", () => {
+    isUserScrolling = true;
+    clearTimeout(chatContainer.scrollTimeout);
+    chatContainer.scrollTimeout = setTimeout(() => {
+        isUserScrolling = false;
+    }, 1000); // Wait for 1 second before allowing auto-scroll again
 });
 
-// Update slider position when user scrolls manually
-chatMessages.addEventListener("scroll", () => {
-    const scrollMax = chatMessages.scrollHeight - chatMessages.clientHeight;
-    const scrollPercent = (chatMessages.scrollTop / scrollMax) * 100;
-    scrollSlider.value = scrollPercent;
-});
+function addNewMessage(message) {
+    const newMessage = document.createElement("div");
+    newMessage.classList.add("message");
+    newMessage.textContent = message;
+    
+    chatContainer.appendChild(newMessage);
+
+    // Only scroll down if the user is NOT actively scrolling
+    if (!isUserScrolling) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+}
+  
 </script>
 </body>
 </html>
