@@ -309,23 +309,20 @@
     <a href="#" onclick="logout()">Logout</a>
 </div>
   
-  <button id="scrollTopBtn" onclick="scrollToTop()" style="
+  <input type="range" id="scroll-slider" min="0" max="100" value="100" step="1" orient="vertical" style="
     position: fixed;
-    bottom: 60px;
-    right: 15px;
-    display: none;
-    background: #4267B2;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 18px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    right: 10px;
+    top: 50px;
+    height: calc(100% - 100px);
+    width: 8px;
+    writing-mode: bt-lr;
+    transform: rotate(180deg);
+    z-index: 10;
+    background: #ddd;
+    border-radius: 10px;
+    outline: none;
 ">
-    ↑
-</button>
-
+   
 <div id="chat" class="chat-container container">
     <div class="chat-messages" id="chat-container"></div>
     <div class="chat-input">
@@ -534,35 +531,35 @@ function displayMessage(text, sender) {
         document.querySelector('.chat-input').style.display = 'flex';
     }
   
- const chatContainer = document.getElementById('chat-container');
-const scrollTopBtn = document.getElementById('scrollTopBtn');
+ document.addEventListener("DOMContentLoaded", function () {
+    const chatContainer = document.getElementById("chat-container");
+    const slider = document.getElementById("scroll-slider");
 
-function scrollToTop() {
-    chatContainer.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Show/hide button based on scroll position
-chatContainer.addEventListener('scroll', () => {
-    if (chatContainer.scrollTop > 100) {
-        scrollTopBtn.style.display = 'block';
-    } else {
-        scrollTopBtn.style.display = 'none';
+    function updateSliderMax() {
+        const maxScroll = chatContainer.scrollHeight - chatContainer.clientHeight;
+        slider.max = maxScroll > 0 ? maxScroll : 100;
+        slider.value = maxScroll;  // Start from the bottom
     }
-});
 
-// Ensure button appears when new messages are added
-function addMessage(content, isSent) {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message', isSent ? 'sent' : 'received');
-    messageDiv.innerText = content;
-    chatContainer.appendChild(messageDiv);
-    
-    // Auto-scroll down to the latest message
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-    
-    // Show scroll button when new messages appear
-    scrollTopBtn.style.display = 'block';
-}
+    function scrollToMessage(index) {
+        const messages = document.querySelectorAll(".message.received");
+        if (messages.length > 0 && index >= 0 && index < messages.length) {
+            messages[index].scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }
+
+    slider.addEventListener("input", function () {
+        const messages = document.querySelectorAll(".message.received");
+        const index = Math.floor((messages.length * slider.value) / slider.max);
+        scrollToMessage(index);
+    });
+
+    updateSliderMax();
+
+    // Adjust slider when a new message is received
+    const observer = new MutationObserver(updateSliderMax);
+    observer.observe(chatContainer, { childList: true, subtree: true });
+});
 </script>
 </body>
-</html>
+    </html>
