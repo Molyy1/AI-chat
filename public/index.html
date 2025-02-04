@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -101,29 +102,16 @@
 
 
         .chat-messages {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;  /* Ensures vertical scrolling */
-    display: flex;
-    flex-direction: column;
-    scroll-behavior: smooth;
-    background-color: #f9f9f9;
-    position: relative;
-}
-
-/* Customize the scrollbar appearance */
-.chat-messages::-webkit-scrollbar {
-    width: 8px; /* Scrollbar width */
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-    background-color: #888; /* Scrollbar thumb color */
-    border-radius: 4px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-    background-color: #f1f1f1; /* Scrollbar track color */
-}
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+            background-color: #f9f9f9;
+            margin-bottom: 50px;
+            position: relative;
+        }
 
         .message {
             bottom: 0;
@@ -321,7 +309,22 @@
     <a href="#" onclick="logout()">Logout</a>
 </div>
   
-  <input type="range" id="scroll-slider" ... >
+  <button id="scrollTopBtn" onclick="scrollToTop()" style="
+    position: fixed;
+    bottom: 60px;
+    right: 15px;
+    display: none;
+    background: #4267B2;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+">
+    ↑
+</button>
 
 <div id="chat" class="chat-container container">
     <div class="chat-messages" id="chat-container"></div>
@@ -532,35 +535,33 @@ function displayMessage(text, sender) {
     }
   
  const chatContainer = document.getElementById('chat-container');
-let isUserScrolling = false;
+const scrollTopBtn = document.getElementById('scrollTopBtn');
 
-// Detect manual scrolling
-chatContainer.addEventListener('scroll', () => {
-    const atBottom = chatContainer.scrollHeight - chatContainer.scrollTop === chatContainer.clientHeight;
-    isUserScrolling = !atBottom;
-});
-
-// Function to scroll to bottom only if the user is not manually scrolling
-function scrollToBottom() {
-    if (!isUserScrolling) {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
+function scrollToTop() {
+    chatContainer.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Call this function every time a new message is sent
-function sendMessage() {
-    let input = document.getElementById("user-input");
-    if (input.value.trim() !== "") {
-        let messageDiv = document.createElement("div");
-        messageDiv.className = "message sent";
-        messageDiv.textContent = input.value;
-        chatContainer.appendChild(messageDiv);
-        input.value = "";
-
-        setTimeout(() => {
-            scrollToBottom(); // Scroll only if user is not manually scrolling
-        }, 100);
+// Show/hide button based on scroll position
+chatContainer.addEventListener('scroll', () => {
+    if (chatContainer.scrollTop > 100) {
+        scrollTopBtn.style.display = 'block';
+    } else {
+        scrollTopBtn.style.display = 'none';
     }
+});
+
+// Ensure button appears when new messages are added
+function addMessage(content, isSent) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', isSent ? 'sent' : 'received');
+    messageDiv.innerText = content;
+    chatContainer.appendChild(messageDiv);
+    
+    // Auto-scroll down to the latest message
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    
+    // Show scroll button when new messages appear
+    scrollTopBtn.style.display = 'block';
 }
 </script>
 </body>
