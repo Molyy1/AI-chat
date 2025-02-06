@@ -303,6 +303,18 @@
     background: rgba(0, 0, 0, 0.2); /* Light semi-transparent black on hover */
 }
   
+  .typing-indicator span {
+    display: inline-block;
+    font-size: 18px;
+    animation: typing 1.2s infinite;
+}
+
+@keyframes typing {
+    0%, 100% { content: "."; }
+    33% { content: ".."; }
+    66% { content: "..."; }
+}
+  
 
     </style>
 </head>
@@ -546,22 +558,42 @@ function displayMessage(text, sender) {
     }
 
     async function fetchChatResponse(userInput) {
-        try {
-            const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
-            const data = await response.json();
+    try {
+        const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
+        const data = await response.json();
 
-            if (data.message) {
+        if (data.message) {
+            showTypingIndicator(); // Show typing animation
+            setTimeout(() => {
+                removeTypingIndicator();
                 displayMessage(data.message, 'received');
-            }
-
-            if (data.images) {
-                displayMessage(data.images, 'received');
-            }
-        } catch (error) {
-            console.error("Error fetching AI response:", error);
+            }, 1500); // Simulate typing delay
         }
-    }
 
+        if (data.images) {
+            displayMessage(data.images, 'received');
+        }
+    } catch (error) {
+        console.error("Error fetching AI response:", error);
+    }
+}
+
+function showTypingIndicator() {
+    const chatContainer = document.getElementById('chat-container');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message received typing-indicator';
+    typingDiv.innerHTML = '<span>...</span>';
+    chatContainer.appendChild(typingDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function removeTypingIndicator() {
+    const typingDiv = document.querySelector('.typing-indicator');
+    if (typingDiv) {
+        typingDiv.remove();
+    }
+}
+  
     document.getElementById('user-input').addEventListener('input', function () {
         autoResize(this);
         document.querySelector('.chat-input button').disabled = this.value.trim().length === 0;
@@ -577,8 +609,8 @@ function displayMessage(text, sender) {
     if (currentUser) {
         showContainer('chat');
         document.querySelector('.chat-input').style.display = 'flex';
-    }    
-  
+    }
+      
 </script>
 </body>
 </html>
