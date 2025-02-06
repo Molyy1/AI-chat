@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -304,24 +303,17 @@
     background: rgba(0, 0, 0, 0.2); /* Light semi-transparent black on hover */
 }
   
-  .avatar.ai {
-    width: 40px; 
-    height: 40px; 
-    border-radius: 50%;
-    background-color: #4267B2; /* Example color */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .typing-indicator span {
+    display: inline-block;
+    font-size: 18px;
+    animation: typing 1.2s infinite;
 }
 
-    .message.received .avatar {
-    display: flex;
+@keyframes typing {
+    0%, 100% { content: "."; }
+    33% { content: ".."; }
+    66% { content: "..."; }
 }
-
-.message.sent .avatar {
-    display: none;
-}
-
   
 
     </style>
@@ -528,16 +520,6 @@ function displayMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message ' + sender;
 
-    // Add AI avatar only for received messages
-    if (sender === 'received') {
-        const avatar = document.createElement('div');
-        avatar.className = 'avatar';
-        avatar.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/>
-                            </svg>`;
-        messageDiv.appendChild(avatar);
-    }
-
     if (Array.isArray(text)) {
         text.forEach(imgSrc => {
             const img = document.createElement('img');
@@ -547,7 +529,6 @@ function displayMessage(text, sender) {
         });
     } else {
         messageDiv.textContent = text;
-
         if (sender === 'received') {
             const copyBtn = document.createElement('button');
             copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
@@ -560,9 +541,8 @@ function displayMessage(text, sender) {
     }
 
     chatContainer.appendChild(messageDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll to latest message
+    chatContainer.scrollTop = chatContainer.scrollHeight; // Keep scroll at bottom
 }
-  
     
     function sendMessage() {
         const textarea = document.getElementById('user-input');
@@ -578,22 +558,42 @@ function displayMessage(text, sender) {
     }
 
     async function fetchChatResponse(userInput) {
-        try {
-            const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
-            const data = await response.json();
+    try {
+        const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
+        const data = await response.json();
 
-            if (data.message) {
+        if (data.message) {
+            showTypingIndicator(); // Show typing animation
+            setTimeout(() => {
+                removeTypingIndicator();
                 displayMessage(data.message, 'received');
-            }
-
-            if (data.images) {
-                displayMessage(data.images, 'received');
-            }
-        } catch (error) {
-            console.error("Error fetching AI response:", error);
+            }, 1500); // Simulate typing delay
         }
-    }
 
+        if (data.images) {
+            displayMessage(data.images, 'received');
+        }
+    } catch (error) {
+        console.error("Error fetching AI response:", error);
+    }
+}
+
+function showTypingIndicator() {
+    const chatContainer = document.getElementById('chat-container');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message received typing-indicator';
+    typingDiv.innerHTML = '<span>Ai is typing...</span>';
+    chatContainer.appendChild(typingDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function removeTypingIndicator() {
+    const typingDiv = document.querySelector('.typing-indicator');
+    if (typingDiv) {
+        typingDiv.remove();
+    }
+}
+  
     document.getElementById('user-input').addEventListener('input', function () {
         autoResize(this);
         document.querySelector('.chat-input button').disabled = this.value.trim().length === 0;
@@ -610,9 +610,7 @@ function displayMessage(text, sender) {
         showContainer('chat');
         document.querySelector('.chat-input').style.display = 'flex';
     }
-    
-    
-  
+      
 </script>
 </body>
 </html>
