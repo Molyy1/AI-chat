@@ -303,7 +303,7 @@
     background: rgba(0, 0, 0, 0.2); /* Light semi-transparent black on hover */
 }
   
- .typing-indicator {
+  .typing-indicator {
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -320,16 +320,32 @@
 
 .typing-indicator span {
     display: inline-block;
-    animation: blink 1.2s infinite steps(3, start);
-    content: "...";
+    width: 8px;
+    height: 8px;
+    margin: 0 2px;
+    background-color: black;
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: blink 1.5s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.6s;
 }
 
 @keyframes blink {
-    0% { content: "."; }
-    33% { content: ".."; }
-    66% { content: "..."; }
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
 }
-  
+
 
     </style>
 </head>
@@ -595,17 +611,20 @@ function displayMessage(text, sender) {
 
 function showTypingIndicator() {
     const chatContainer = document.getElementById('chat-container');
-
-    // Remove existing typing indicators to avoid duplicates
     removeTypingIndicator();
 
     const typingDiv = document.createElement('div');
     typingDiv.className = 'message received typing-indicator';
-    typingDiv.innerHTML = '<span>AI is typing</span>';
+    typingDiv.innerHTML = `
+        <span></span>
+        <span></span>
+        <span></span>
+    `;
 
     chatContainer.appendChild(typingDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
+
 
 function removeTypingIndicator() {
     const typingDiv = document.querySelector('.typing-indicator');
