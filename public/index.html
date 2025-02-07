@@ -306,48 +306,57 @@
   .typing-indicator {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     background-color: #f0f0f0;
     padding: 10px;
     border-radius: 20px;
     margin-bottom: 10px;
     max-width: fit-content;
+    word-wrap: break-word;
+    white-space: pre-wrap;
     font-family: Arial, sans-serif;
     font-size: 16px;
 }
 
-.typing-indicator .dot {
-    width: 6px;
-    height: 6px;
-    margin-left: 3px;
+.typing-indicator span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin: 0 2px;
     background-color: black;
     border-radius: 50%;
-    opacity: 0;
-    animation: blink 1.5s infinite;
+    opacity: 0.3;
+    animation: blink 1.5s infinite ease-in-out;
 }
 
-.typing-indicator .dot:nth-child(2) {
-    animation-delay: 0.2s;
+.typing-indicator span:nth-child(1) {
+    animation-delay: 0s;
 }
 
-.typing-indicator .dot:nth-child(3) {
-    animation-delay: 0.4s;
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.6s;
 }
 
 @keyframes blink {
-    0%, 80% { opacity: 0; }
-    40% { opacity: 1; }
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
 }
 
-  .typing-indicator span {
+.typing-text::after {
+    content: "|";
     display: inline-block;
-    animation: blink 1.2s infinite steps(3, start);
+    animation: blink 0.8s infinite;
 }
 
 @keyframes blink {
-    0% { content: "."; }
-    33% { content: ".."; }
-    66% { content: "..."; }
-}  
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+    
 
     </style>
 </head>
@@ -561,20 +570,35 @@ function displayMessage(text, sender) {
             messageDiv.appendChild(img);
         });
     } else {
-        messageDiv.textContent = text;
         if (sender === 'received') {
-            const copyBtn = document.createElement('button');
-            copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
-            copyBtn.className = 'copy-btn';
-            copyBtn.onclick = function() {
-                copyToClipboard(text, copyBtn);
-            };
-            messageDiv.appendChild(copyBtn);
+            const messageText = document.createElement('span');
+            messageText.className = 'typing-text';
+            messageDiv.appendChild(messageText);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Keep scroll at bottom
+            typeText(messageText, text); // Start typing animation
+        } else {
+            messageDiv.textContent = text;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
     }
+}
 
-    chatContainer.appendChild(messageDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight; // Keep scroll at bottom
+function typeText(element, text, index = 0) {
+    if (index < text.length) {
+        element.textContent += text.charAt(index);
+        setTimeout(() => typeText(element, text, index + 1), 40); // Adjust speed here (lower is faster)
+    } else {
+        // Add copy button after text finishes typing
+        const copyBtn = document.createElement('button');
+        copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
+        copyBtn.className = 'copy-btn';
+        copyBtn.onclick = function() {
+            copyToClipboard(text, copyBtn);
+        };
+        element.parentNode.appendChild(copyBtn);
+    }
 }
     
     function sendMessage() {
@@ -613,16 +637,14 @@ function displayMessage(text, sender) {
 
 function showTypingIndicator() {
     const chatContainer = document.getElementById('chat-container');
-
-    removeTypingIndicator(); // Remove existing typing indicators to avoid duplicates
+    removeTypingIndicator();
 
     const typingDiv = document.createElement('div');
     typingDiv.className = 'message received typing-indicator';
     typingDiv.innerHTML = `
-        AI is typing
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
+        <span></span>
+        <span></span>
+        <span></span>
     `;
 
     chatContainer.appendChild(typingDiv);
