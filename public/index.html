@@ -586,9 +586,11 @@ function displayMessage(text, sender) {
 }
 
 function typeText(element, text, index = 0) {
+    let speed = text.length > 50 ? 20 : 35; // Faster for longer texts
+
     if (index < text.length) {
         element.textContent += text.charAt(index);
-        setTimeout(() => typeText(element, text, index + 1), 40); // Adjust speed here (lower is faster)
+        setTimeout(() => typeText(element, text, index + 1), speed);
     } else {
         // Add copy button after text finishes typing
         const copyBtn = document.createElement('button');
