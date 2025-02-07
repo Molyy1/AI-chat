@@ -586,7 +586,7 @@ function displayMessage(text, sender) {
 }
 
 function typeText(element, text, index = 0) {
-    let speed = text.length > 50 ? 20 : 35; // Faster for longer texts
+    let speed = Math.max(5, 100 / Math.log(text.length + 1)); // Dynamic speed calculation
 
     if (index < text.length) {
         element.textContent += text.charAt(index);
@@ -602,6 +602,7 @@ function typeText(element, text, index = 0) {
         element.parentNode.appendChild(copyBtn);
     }
 }
+
     
     function sendMessage() {
         const textarea = document.getElementById('user-input');
