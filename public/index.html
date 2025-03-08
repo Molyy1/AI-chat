@@ -189,16 +189,16 @@
         }
 
         .chat-messages {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    scroll-behavior: smooth;
-    background-color: #f9f9f9;
-    margin-bottom: 70px; /* Increased margin to prevent content from being hidden behind chat input */
-    height: calc(100vh - 130px);
-}
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+            background-color: #f9f9f9;
+            margin-bottom: 60px;
+            height: calc(100vh - 120px);
+        }
 
         .message {
             padding: 10px;
@@ -252,9 +252,8 @@
             outline: none;
         }
 
-        
-        .chat-input {
-    display: none;
+         .chat-input {
+    display: flex;
     align-items: center;
     padding: 10px;
     border-top: 1px solid #ddd;
@@ -266,28 +265,24 @@
     width: 100%;
     max-width: 600px;
     box-sizing: border-box;
-    z-index: 1001; /* Increased z-index to ensure it's always on top */
+    z-index: 1001;
 }
-
-      .chat-input textarea {
+         .chat-input textarea {
     flex: 1;
     padding: 10px 15px;
     border-radius: 20px;
     border: 1px solid #f2f2f2;
     outline: none;
     font-size: 16px;
-    max-height: 100px;
     min-height: 40px;
-    color: #333333;
-    background-color: #f2f2f2;
-    width: calc(100% - 50px);
-    margin-right: 10px;
+    max-height: 100px;
     resize: none;
     font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    width: 100%;
 }
 
-    
-          .chat-input button {
+         .chat-input button {
             background: none;
             border: none;
             cursor: pointer;
@@ -302,12 +297,7 @@
       .chat-input button:disabled i {
     color: #888;
 }
-  
-
-                .chat-input button:disabled i {
-            color: #888;
-        }
-
+ 
         .auth-container {
             display: flex;
             justify-content: center;
