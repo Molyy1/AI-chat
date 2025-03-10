@@ -77,15 +77,10 @@
 
         .container {
             display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
         }
 
-        .container.active {
+        .active {
             display: block;
-            opacity: 1;
-            pointer-events: auto;
         }
 
         .chat-container {
@@ -100,14 +95,9 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            overflow-y: auto;
+            overflow: hidden;
             z-index: 1;
-            padding-top: 10px;
-        }
-
-        .message {
-            padding: 10px; 
-            border-bottom: 1px solid #e0e0e0;
+            padding-top: 60px;
         }
 
         .chat-messages {
@@ -131,30 +121,53 @@
             word-wrap: break-word;
             white-space: pre-wrap;
             position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .ai-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/385.png');
+            background-size: cover;
+            background-position: center;
+            margin-right: 8px;
+        }
+
+        .message-content {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border-radius: 12px;
         }
 
         .message.sent {
-            background-color: #DCF8C6;
+            background-color: transparent;
             align-self: flex-end;
         }
 
+        .message.sent .message-content {
+            background-color: #DCF8C6;
+        }
+
         .message.received {
-            background-color: #f0f0f0;
+            background-color: transparent;
             font-family: Arial, sans-serif;
+            margin-bottom: 50px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        .message.received .message-content {
+            background-color: #f0f0f0;
         }
 
         .message img {
             max-width: 100%;
             border-radius: 10px;
             margin-top: 5px;
-        }
-    
-        .message.received {
-            margin-bottom: 50px;
-            scroll-behavior: smooth;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-            position: relative;
         }
 
         .copy-btn {
@@ -285,7 +298,7 @@
             color: #4267B2;
             text-decoration: none;
         }
-        
+
         .gotopbtn {
             position: fixed;
             width: 30px;
@@ -306,49 +319,6 @@
 
         .gotopbtn:hover {
             background: rgba(0, 0, 0, 0.2);
-        }
-  
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            background-color: #f0f0f0;
-            padding: 10px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-            max-width: fit-content;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-        }
-
-        .typing-indicator span {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            margin: 0 2px;
-            background-color: black;
-            border-radius: 50%;
-            opacity: 0.3;
-            animation: blink 1.5s infinite ease-in-out;
-        }
-
-        .typing-indicator span:nth-child(1) {
-            animation-delay: 0s;
-        }
-
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.3s;
-        }
-
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.6s;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
         }
     </style>
 </head>
@@ -371,10 +341,8 @@
         <div class="title">AI Chatbot &#9662;</div>
     </div>
     <div class="title">ㅤㅤ ㅤㅤㅤ ㅤㅤㅤ<span class="material-icons">ㅤㅤ ㅤ</span></div>
-    
     <div class="dropdown" id="dropdown">
         <a href="#" onclick="showContainer('chat')">Chat with AI</a>
-        <a href="#" onclick="showContainer('apikeys')">API Keys</a>
         <a href="#" onclick="showContainer('about')">About</a>
         <a href="#" onclick="logout()">Logout</a>
     </div>
@@ -389,17 +357,7 @@
         </div>
     </div>
     
-    <div id="apikeys" class="api-container container">
-        <h2>API Keys</h2>
-        <p>Manage your API keys securely.</p>
-        <input type="text" id="api-name" placeholder="API Name">
-        <input type="text" id="api-key" placeholder="API Key" readonly>
-        <button onclick="generateApiKey()">Generate API Key</button>
-        <button onclick="saveApiKey()">Save API Key</button>
-        <ul id="api-list"></ul>
-    </div>
-    
-    <a class="gotopbtn" href="#"> <i class="fas fa-arrow-up"></i> </a>
+    <a class="gotopbtn" href="#"><i class="fas fa-arrow-up"></i></a>
 
     <div id="about" class="about-container container">
         <h2>About this AI Chatbot</h2>
@@ -514,25 +472,10 @@
 
         function showContainer(containerId) {
             const containers = document.querySelectorAll('.container');
-            containers.forEach(container => {
-                if (container.id === containerId) {
-                    container.style.display = 'block';
-                    setTimeout(() => {
-                        container.classList.add('active');
-                    }, 10);
-                } else {
-                    container.classList.remove('active');
-                    setTimeout(() => {
-                        container.style.display = 'none';
-                    }, 300);
-                }
-            });
+            containers.forEach(container => container.classList.remove('active'));
 
-            if (containerId === 'chat') {
-                document.querySelector('.chat-input').style.display = 'flex';
-            } else {
-                document.querySelector('.chat-input').style.display = 'none';
-            }
+            const selectedContainer = document.getElementById(containerId);
+            selectedContainer.classList.add('active');
 
             document.getElementById('dropdown').style.display = 'none';
             document.getElementById('auth-container').style.display = 'none';
@@ -554,6 +497,46 @@
             }, 3000);
         }
 
+        function displayMessage(text, sender) {
+            const chatContainer = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + sender;
+
+            // Add AI avatar only for received messages
+            if (sender === 'received') {
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'ai-avatar';
+                messageDiv.appendChild(avatarDiv);
+            }
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+
+            if (Array.isArray(text)) {
+                text.forEach(imgSrc => {
+                    const img = document.createElement('img');
+                    img.src = imgSrc;
+                    img.alt = "AI response image";
+                    contentDiv.appendChild(img);
+                });
+            } else {
+                contentDiv.textContent = text;
+                if (sender === 'received') {
+                    const copyBtn = document.createElement('button');
+                    copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.onclick = function() {
+                        copyToClipboard(text, copyBtn);
+                    };
+                    contentDiv.appendChild(copyBtn);
+                }
+            }
+
+            messageDiv.appendChild(contentDiv);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
         function sendMessage() {
             const textarea = document.getElementById('user-input');
             const userInput = textarea.value.trim();
@@ -563,42 +546,8 @@
                 autoResize(textarea);
                 document.querySelector('.chat-input button').disabled = true;
 
-                const allCopyButtons = document.querySelectorAll('.copy-btn');
-                allCopyButtons.forEach(button => {
-                    button.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
-                });
-
                 fetchChatResponse(userInput);
             }
-        }
-
-        function displayMessage(text, sender) {
-            const chatContainer = document.getElementById('chat-container');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message ' + sender;
-
-            if (Array.isArray(text)) {
-                text.forEach(imgSrc => {
-                    const img = document.createElement('img');
-                    img.src = imgSrc;
-                    img.alt = "AI response image";
-                    messageDiv.appendChild(img);
-                });
-            } else {
-                messageDiv.textContent = text;
-                if (sender === 'received') {
-                    const copyBtn = document.createElement('button');
-                    copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
-                    copyBtn.className = 'copy-btn';
-                    copyBtn.onclick = function() {
-                        copyToClipboard(text, copyBtn);
-                    };
-                    messageDiv.appendChild(copyBtn);
-                }
-            }
-
-            chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         async function fetchChatResponse(userInput) {
@@ -607,11 +556,7 @@
                 const data = await response.json();
 
                 if (data.message) {
-                    showTypingIndicator();
-                    setTimeout(() => {
-                        removeTypingIndicator();
-                        displayMessage(data.message, 'received');
-                    }, 1500);
+                    displayMessage(data.message, 'received');
                 }
 
                 if (data.images) {
@@ -619,29 +564,6 @@
                 }
             } catch (error) {
                 console.error("Error fetching AI response:", error);
-            }
-        }
-
-        function showTypingIndicator() {
-            const chatContainer = document.getElementById('chat-container');
-            removeTypingIndicator();
-
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message received typing-indicator';
-            typingDiv.innerHTML = `
-                <span></span>
-                <span></span>
-                <span></span>
-            `;
-
-            chatContainer.appendChild(typingDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const typingDiv = document.querySelector('.typing-indicator');
-            if (typingDiv) {
-                typingDiv.remove();
             }
         }
 
@@ -662,66 +584,6 @@
             showContainer('chat');
             document.querySelector('.chat-input').style.display = 'flex';
         }
-
-        function generateApiKey() {
-            const apiKey = 'sk-' + Math.random().toString(36).substr(2, 16) + Math.random().toString(36).substr(2, 16);
-            document.getElementById("api-key").value = apiKey;
-        }
-
-        function saveApiKey() {
-            const apiName = document.getElementById("api-name").value.trim();
-            const apiKey = document.getElementById("api-key").value.trim();
-
-            if (!apiName || !apiKey) {
-                alert("Please enter an API name and generate a key first.");
-                return;
-            }
-
-            const apiList = JSON.parse(localStorage.getItem("apiKeys")) || [];
-            apiList.push({ name: apiName, key: apiKey });
-            localStorage.setItem("apiKeys", JSON.stringify(apiList));
-
-            displayApiKeys();
-        }
-
-        function displayApiKeys() {
-            const apiList = JSON.parse(localStorage.getItem("apiKeys")) || [];
-            const apiListContainer = document.getElementById("api-list");
-            apiListContainer.innerHTML = "";
-
-            apiList.forEach((api, index) => {
-                const li = document.createElement("li");
-                li.textContent = `${api.name}: ${api.key}`;
-                
-                const copyBtn = document.createElement("button");
-                copyBtn.textContent = "Copy";
-                copyBtn.onclick = function () {
-                    navigator.clipboard.writeText(api.key);
-                    alert("API Key copied!");
-                };
-
-                const deleteBtn = document.createElement("button");
-                deleteBtn.textContent = "Delete";
-                deleteBtn.onclick = function () {
-                    apiList.splice(index, 1);
-                    localStorage.setItem("apiKeys", JSON.stringify(apiList));
-                    displayApiKeys();
-                };
-
-                li.appendChild(copyBtn);
-                li.appendChild(deleteBtn);
-                apiListContainer.appendChild(li);
-            });
-        }
-
-        window.onload = displayApiKeys;
-
-        const chatContainer = document.getElementById('chat-container');
-        chatContainer.addEventListener('scroll', () => {
-            if (chatContainer.scrollTop === 0) {
-                loadOlderMessages();
-            }
-        });
     </script>
 </body>
 </html>
