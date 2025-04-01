@@ -859,8 +859,16 @@
       // Function to fetch chat response from API
 async function fetchChatResponse(userInput) {
     try {
+        console.log("Fetching response for:", userInput); // Debugging log
+
         const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
         const data = await response.json();
+        console.log("API Response:", data); // Log API response
 
         if (data.message) {
             showTypingIndicator();
@@ -869,12 +877,12 @@ async function fetchChatResponse(userInput) {
                 displayMessage(data.message, 'received');
                 saveChatToHistory(data.message, 'received');
             }, 1500);
+        } else {
+            console.error("No 'message' in API response:", data);
+            removeTypingIndicator();
+            displayMessage("No valid response from AI.", 'received');
         }
 
-        if (data.images) {
-            displayMessage(data.images, 'received');
-            saveChatToHistory(JSON.stringify(data.images), 'received');
-        }
     } catch (error) {
         console.error("Error fetching AI response:", error);
         removeTypingIndicator();
