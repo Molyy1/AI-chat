@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* All existing styles remain exactly the same */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f2f5;
@@ -598,6 +599,7 @@
             </div>
             <div class="kebab-dropdown">
                 <a href="#" onclick="toggleTheme()">Toggle Theme</a>
+                <a href="#" onclick="viewChatHistory()">Chat History</a>
                 <a href="#" onclick="clearChat()">Clear Chat</a>
                 <a href="#" onclick="exportChat()">Export Chat</a>
                 <a href="#" onclick="showSettings()">Settings</a>
@@ -687,6 +689,49 @@
     <script>
         let isLogin = true;
         let users = JSON.parse(localStorage.getItem('users')) || {};
+        let chatHistory = [];
+
+        function saveChatToHistory(message, type) {
+            chatHistory.push({ message, type, timestamp: new Date().toISOString() });
+            localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+        }
+
+        function loadChatHistory() {
+            const history = localStorage.getItem('chatHistory');
+            if (history) {
+                chatHistory = JSON.parse(history);
+                chatHistory.forEach(item => {
+                    displayMessage(item.message, item.type);
+                });
+            }
+        }
+
+        function viewChatHistory() {
+            const historyWindow = window.open('', 'Chat History', 'width=600,height=800');
+            historyWindow.document.write(`
+                <html>
+                <head>
+                    <title>Chat History</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
+                        .sent { background: #DCF8C6; text-align: right; }
+                        .received { background: #f0f0f0; }
+                        .timestamp { font-size: 0.8em; color: #666; }
+                    </style>
+                </head>
+                <body>
+                    <h2>Chat History</h2>
+                    ${chatHistory.map(item => `
+                        <div class="message ${item.type}">
+                            <div>${item.message}</div>
+                            <div class="timestamp">${new Date(item.timestamp).toLocaleString()}</div>
+                        </div>
+                    `).join('')}
+                </body>
+                </html>
+            `);
+        }
 
         function toggleAuth() {
             isLogin = !isLogin;
@@ -712,6 +757,7 @@
             updateGoTopBtn();
             handleScroll();
             populateNews();
+            loadChatHistory();
 
             document.querySelector('.gotopbtn').addEventListener('click', function (e) {
                 e.preventDefault();
@@ -842,8 +888,7 @@
             }, 3000);
         }
 
-        function showTypingAnimation() {
-            const chatContainer = document.getElementById('chat-container');
+        function showTypingIndicator() {
             const typingDiv = document.createElement('div');
             typingDiv.className = 'typing-animation';
             typingDiv.innerHTML = `
@@ -851,120 +896,66 @@
                 <div class="typing-dot"></div>
                 <div class="typing-dot"></div>
             `;
-            chatContainer.appendChild(typingDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            document.getElementById('chat-container').appendChild(typingDiv);
             return typingDiv;
         }
 
-      // Function to fetch chat response from API
-async function fetchChatResponse(userInput) {
-    try {
-        console.log("Fetching response for:", userInput); // Debugging log
-
-        const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+        function removeTypingIndicator() {
+            const typingIndicator = document.querySelector('.typing-animation');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
         }
 
-        const data = await response.json();
-        console.log("API Response:", data); // Log API response
+        async function sendMessage() {
+            const textarea = document.getElementById('user-input');
+            const userInput = textarea.value.trim();
+            
+            if (userInput) {
+                displayMessage(userInput, 'sent');
+                saveChatToHistory(userInput, 'sent');
+                textarea.value = '';
+                autoResize(textarea);
+                document.querySelector('.chat-input button').disabled = true;
 
-        if (data.message) {
-            showTypingIndicator();
-            setTimeout(() => {
-                removeTypingIndicator();
-                displayMessage(data.message, 'received');
-                saveChatToHistory(data.message, 'received');
-            }, 1500);
-        } else {
-            console.error("No 'message' in API response:", data);
-            removeTypingIndicator();
-            displayMessage("No valid response from AI.", 'received');
+                const typingAnimation = showTypingIndicator();
+                
+                try {
+                    await fetchChatResponse(userInput);
+                } catch (error) {
+                    console.error("Error:", error);
+                    typingAnimation.remove();
+                    const errorMessage = "Sorry, there was an error processing your request.";
+                    displayMessage(errorMessage, 'received');
+                    saveChatToHistory(errorMessage, 'received');
+                }
+            }
         }
 
-    } catch (error) {
-        console.error("Error fetching AI response:", error);
-        removeTypingIndicator();
-        displayMessage("Sorry, there was an error processing your request.", 'received');
-    }
-}
+        async function fetchChatResponse(userInput) {
+            try {
+                const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
+                const data = await response.json();
 
-// Function to handle user message input and response
-async function sendMessage() {
-    const textarea = document.getElementById('user-input');
-    const userInput = textarea.value.trim();
-    
-    if (userInput) {
-        displayMessage(userInput, 'sent');
-        textarea.value = '';
-        autoResize(textarea);
-        document.querySelector('.chat-input button').disabled = true;
+                if (data.message) {
+                    showTypingIndicator();
+                    setTimeout(() => {
+                        removeTypingIndicator();
+                        displayMessage(data.message, 'received');
+                        saveChatToHistory(data.message, 'received');
+                    }, 1500);
+                }
 
-        showTypingIndicator(); // Show typing indicator before fetching response
-
-        try {
-            await fetchChatResponse(userInput); // Fetch AI response
-        } catch (error) {
-            console.error("Error:", error);
-            removeTypingIndicator();
-            displayMessage("Sorry, there was an error processing your request.", 'received');
+                if (data.images) {
+                    displayMessage(data.images, 'received');
+                    saveChatToHistory(JSON.stringify(data.images), 'received');
+                }
+            } catch (error) {
+                console.error("Error fetching AI response:", error);
+                throw error;
+            }
         }
-    }
-}
 
-// Function to display messages in chat UI
-function displayMessage(message, type) {
-    const chatBox = document.getElementById('chat-box');
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message', type);
-    messageElement.innerText = message;
-    chatBox.appendChild(messageElement);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-// Function to save chat history (optional)
-function saveChatToHistory(message, type) {
-    const chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
-    chatHistory.push({ message, type });
-    localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
-}
-
-// Function to show typing indicator
-function showTypingIndicator() {
-    const chatBox = document.getElementById('chat-box');
-    const typingIndicator = document.createElement('div');
-    typingIndicator.id = 'typing-indicator';
-    typingIndicator.classList.add('message', 'typing');
-    typingIndicator.innerText = 'Typing...';
-    chatBox.appendChild(typingIndicator);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-// Function to remove typing indicator
-function removeTypingIndicator() {
-    const typingIndicator = document.getElementById('typing-indicator');
-    if (typingIndicator) {
-        typingIndicator.remove();
-    }
-}
-
-// Function to auto-resize text area
-function autoResize(textarea) {
-    textarea.style.height = 'auto';
-    textarea.style.height = textarea.scrollHeight + 'px';
-}
-
-// Event listener for sending message on Enter key press
-document.getElementById('user-input').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage();
-    }
-});
-
-// Event listener for send button click
-document.querySelector('.chat-input button').addEventListener('click', sendMessage);
         function displayMessage(text, sender) {
             const chatContainer = document.getElementById('chat-container');
             const messageDiv = document.createElement('div');
@@ -1016,6 +1007,8 @@ document.querySelector('.chat-input button').addEventListener('click', sendMessa
         function clearChat() {
             const chatContainer = document.getElementById('chat-container');
             chatContainer.innerHTML = '';
+            chatHistory = [];
+            localStorage.removeItem('chatHistory');
             const dropdown = document.querySelector('.kebab-dropdown');
             dropdown.classList.remove('active');
         }
@@ -1033,8 +1026,6 @@ document.querySelector('.chat-input button').addEventListener('click', sendMessa
             const dropdown = document.querySelector('.kebab-dropdown');
             dropdown.classList.remove('active');
         }
-
-        
 
         function showSettings() {
             alert('Settings panel coming soon!');
