@@ -1,12 +1,14 @@
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Chatbot</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* All original styles remain exactly the same */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f2f5;
@@ -350,22 +352,21 @@
         }
 
         .about-container, .features-container, .help-container {
-    padding: 20px;
-    width: 90%;
-    height: 100vh;
-    max-width: none;
-    max-height: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: white;
-    border-radius: 0;
-    box-shadow: none;
-    overflow-y: auto;
-    display: none;
-    z-index: 1002;
-}
-
+            padding: 20px;
+            width: 90%;
+            height: 100vh;
+            max-width: none;
+            max-height: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: white;
+            border-radius: 0;
+            box-shadow: none;
+            overflow-y: auto;
+            display: none;
+            z-index: 1002;
+        }
 
         .overlay {
             display: none;
@@ -440,7 +441,7 @@
             color: #666;
         }
   
-         .news-container {
+        .news-container {
             position: fixed;
             right: 20px;
             top: 80px;
@@ -501,7 +502,6 @@
             z-index: 101;
             display: none;
         }
-
     </style>
 </head>
 <body>
@@ -518,7 +518,7 @@
         </div>
     </div>
 
-     <div class="menu">
+    <div class="menu">
         <div class="hamburger" onclick="toggleDropdown()">☰</div>
         <div class="title">AI Chatbot &#9662;</div>
         <div class="kebab-menu" onclick="toggleKebabMenu(event)">
@@ -544,7 +544,6 @@
         <a href="#" onclick="logout()">Logout</a>
     </div>
   
-    
     <button class="news-toggle" onclick="toggleNews()">
         <i class="fas fa-newspaper"></i> News
     </button>
@@ -782,6 +781,9 @@
                 textarea.value = '';
                 autoResize(textarea);
                 document.querySelector('.chat-input button').disabled = true;
+                
+                // Keep focus on the textarea after sending
+                textarea.focus();
 
                 const allCopyButtons = document.querySelectorAll('.copy-btn');
                 allCopyButtons.forEach(button => {
@@ -838,7 +840,7 @@
             }
         }
     
-     function toggleKebabMenu(event) {
+        function toggleKebabMenu(event) {
             event.stopPropagation();
             const dropdown = document.querySelector('.kebab-dropdown');
             dropdown.classList.toggle('active');
@@ -878,14 +880,11 @@
             dropdown.classList.remove('active');
         }
 
-        
-
         function showSettings() {
             alert('Settings panel coming soon!');
             const dropdown = document.querySelector('.kebab-dropdown');
             dropdown.classList.remove('active');
         }
-
   
         function toggleNews() {
             const newsContainer = document.getElementById('news-container');
@@ -925,6 +924,20 @@
                 newsItems.appendChild(newsItem);
             });
         }
+
+        // Add event listener for Enter key
+        document.getElementById('user-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Prevent keyboard from hiding when clicking send button
+        document.querySelector('.chat-input button').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            sendMessage();
+        });
 
         document.getElementById('user-input').addEventListener('input', function () {
             autoResize(this);
