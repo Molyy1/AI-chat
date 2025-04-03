@@ -687,14 +687,70 @@
     <script>
         async function fetchChatResponse(userInput) {
             try {
-                const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ prompt: userInput })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 const data = await response.json();
-                return data.response;
+                
+                // Check if the response has the expected structure
+                if (data && data.response) {
+                    return data.response;
+                } else {
+                    // If the API response doesn't have the expected structure,
+                    // return a default message
+                    return "I apologize, but I couldn't process that request properly.";
+                }
             } catch (error) {
                 console.error("Error fetching chat response:", error);
-                throw error;
+                throw new Error("Failed to get response from the server");
             }
         }
+
+        async function sendMessage() {
+            const textarea = document.getElementById('user-input');
+            const userInput = textarea.value.trim();
+            if (userInput) {
+                displayMessage(userInput, 'sent');
+                textarea.value = '';
+                autoResize(textarea);
+                document.querySelector('.chat-input button').disabled = true;
+
+                const typingAnimation = showTypingAnimation();
+                
+                try {
+                    const response = await fetchChatResponse(userInput);
+                    typingAnimation.remove();
+                    if (response) {
+                        displayMessage(response, 'received');
+                    } else {
+                        displayMessage("I apologize, but I couldn't generate a response.", 'received');
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    typingAnimation.remove();
+                    displayMessage("Sorry, there was an error processing your request.", 'received');
+                }
+            }
+        }
+
+        // Add event listener for Enter key
+        document.getElementById('user-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!document.querySelector('.chat-input button').disabled) {
+                    sendMessage();
+                }
+            }
+        });
 
         let isLogin = true;
         let users = JSON.parse(localStorage.getItem('users')) || {};
@@ -865,29 +921,6 @@
             chatContainer.appendChild(typingDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
             return typingDiv;
-        }
-
-        async function sendMessage() {
-            const textarea = document.getElementById('user-input');
-            const userInput = textarea.value.trim();
-            if (userInput) {
-                displayMessage(userInput, 'sent');
-                textarea.value = '';
-                autoResize(textarea);
-                document.querySelector('.chat-input button').disabled = true;
-
-                const typingAnimation = showTypingAnimation();
-                
-                try {
-                    const response = await fetchChatResponse(userInput);
-                    typingAnimation.remove();
-                    displayMessage(response, 'received');
-                } catch (error) {
-                    console.error("Error:", error);
-                    typingAnimation.remove();
-                    displayMessage("Sorry, there was an error processing your request.", 'received');
-                }
-            }
         }
 
         function displayMessage(text, sender) {
