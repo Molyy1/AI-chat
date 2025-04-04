@@ -22,7 +22,7 @@ app.get("/api/chat", async (req, res) => {
 
     // Use the local AI server's endpoint (with cache buster)
     const response = await axios.get(
-      `https://over-ai-yau-5001-center-hassan.vercel.app/ai?prompt=${encodeURIComponent(prompt)}&cb=${cacheBuster}`
+      `https://yau-ai-runing-station.vercel.app/ai?prompt=${encodeURIComponent(prompt)}&cb=${cacheBuster}`
     );
 
     if (response.status !== 200 || !response.data || !response.data.response) {
