@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* All original styles remain exactly the same */
+        /* All previous styles remain exactly the same until news-toggle */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f2f5;
@@ -56,7 +56,7 @@
             font-weight: 500;
         }
     
-         .kebab-menu {
+        .kebab-menu {
             position: absolute;
             right: 15px;
             top: 50%;
@@ -171,7 +171,7 @@
             margin-top: 0;
         }
 
-        .message {
+         .message {
             padding: 10px;
             border-radius: 20px;
             margin-bottom: 15px;
@@ -179,18 +179,46 @@
             word-wrap: break-word;
             white-space: pre-wrap;
             position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .message .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .message .content {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 15px;
+            position: relative;
         }
 
         .message.sent {
-            background-color: #DCF8C6;
+            flex-direction: row-reverse;
             align-self: flex-end;
         }
 
-        .message.received {
+        .message.sent .content {
+            background-color: #DCF8C6;
+        }
+
+        .message.received .content {
             background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-            margin-bottom: 30px;
-            position: relative;
+        }
+
+        .message.sent .avatar {
+            background-image: url('https://ui-avatars.com/api/?name=User&background=4267B2&color=fff');
+        }
+
+        .message.received .avatar {
+            background-image: url('https://ui-avatars.com/api/?name=AI&background=2196F3&color=fff');
         }
 
         .message img {
@@ -201,10 +229,9 @@
 
         .copy-btn {
             position: absolute;
-            overflow: scroll;
             bottom: -19px;
             left: 10px;
-            background-color: none;
+            background: none;
             color: black;
             border: none;
             padding: 0;
@@ -440,68 +467,77 @@
             margin-left: 20px;
             color: #666;
         }
-  
         .news-container {
-            position: fixed;
-            right: 20px;
-            top: 80px;
-            width: 300px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 100;
-            display: none;
-        }
+    position: fixed;
+    right: 20px;
+    top: 80px;
+    width: 300px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 100;
+    display: none;
+}
 
-        .news-header {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            font-weight: bold;
-            color: #333;
-        }
+.news-header {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    font-weight: bold;
+    color: #333;
+}
 
-        .news-items {
-            max-height: 400px;
-            overflow-y: auto;
-            padding: 10px;
-        }
+.news-items {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+}
 
-        .news-item {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
+.news-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
 
-        .news-item:hover {
-            background-color: #f5f5f5;
-        }
+.news-item:hover {
+    background-color: #f5f5f5;
+}
 
-        .news-item h3 {
-            margin: 0 0 5px 0;
-            font-size: 14px;
-            color: #333;
-        }
+.news-item h3 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    color: #333;
+}
 
-        .news-item p {
-            margin: 0;
-            font-size: 12px;
-            color: #666;
-        }
+.news-item p {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
 
-        .news-toggle {
-            position: fixed;
-            right: 20px;
-            top: 60px;
-            background: #4267B2;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 101;
-            display: none;
-        }
+.news-toggle {
+    position: fixed;
+    right: 44px;
+    top: 17px;
+    background: transparent; /* No background */
+    color: #333; /* Icon color */
+    border: none;
+    width: auto;
+    height: auto;
+    border-radius: 0; /* No border radius */
+    cursor: pointer;
+    z-index: 101;
+    padding: 0;
+    transition: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index:1000;
+}
+
+.news-toggle i {
+    font-size: 20px; /* Adjust icon size */
+}
     </style>
 </head>
 <body>
@@ -544,8 +580,8 @@
         <a href="#" onclick="logout()">Logout</a>
     </div>
   
-    <button class="news-toggle" onclick="toggleNews()">
-        <i class="fas fa-newspaper"></i> News
+    <button class="news-toggle" onclick="toggleNews()" title="Toggle News">
+        <i class="fas fa-newspaper"></i>
     </button>
 
     <div class="news-container" id="news-container">
@@ -799,15 +835,23 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message ' + sender;
 
+                     // Create avatar div
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'avatar';
+
+            // Create content div
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'content';
+
             if (Array.isArray(text)) {
                 text.forEach(imgSrc => {
                     const img = document.createElement('img');
                     img.src = imgSrc;
                     img.alt = "AI response image";
-                    messageDiv.appendChild(img);
+                    contentDiv.appendChild(img);
                 });
             } else {
-                messageDiv.textContent = text;
+                contentDiv.textContent = text;
                 if (sender === 'received') {
                     const copyBtn = document.createElement('button');
                     copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
@@ -815,30 +859,40 @@
                     copyBtn.onclick = function() {
                         copyToClipboard(text, copyBtn);
                     };
-                    messageDiv.appendChild(copyBtn);
+                    contentDiv.appendChild(copyBtn);
                 }
             }
 
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(contentDiv);
             chatContainer.appendChild(messageDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        async function fetchChatResponse(userInput) {
-            try {
-                const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
-                const data = await response.json();
+        
+async function fetchChatResponse(userInput) {
+    try {
+        // Simulated response
+        const data = {
+            message: "this is just a reached bot bro",
+            images: null // or add images if needed
+        };
 
-                if (data.message) {
-                    displayMessage(data.message, 'received');
-                }
-
-                if (data.images) {
-                    displayMessage(data.images, 'received');
-                }
-            } catch (error) {
-                console.error("Error fetching AI response:", error);
-            }
+        // Display the message
+        if (data.message) {
+            displayMessage(data.message, 'received');
         }
+
+        // Display images if any
+        if (data.images) {
+            displayMessage(data.images, 'received');
+        }
+    } catch (error) {
+        console.error("error fetching AI response:", error);
+    }
+}
+
+
     
         function toggleKebabMenu(event) {
             event.stopPropagation();
