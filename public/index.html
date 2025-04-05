@@ -870,29 +870,22 @@
         }
 
         
-async function fetchChatResponse(userInput) {
-    try {
-        // Simulated response
-        const data = {
-            message: "this is just a reached bot bro",
-            images: null // or add images if needed
-        };
+   async function fetchChatResponse(userInput) {
+            try {
+                const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
+                const data = await response.json();
 
-        // Display the message
-        if (data.message) {
-            displayMessage(data.message, 'received');
+                if (data.message) {
+                    displayMessage(data.message, 'received');
+                }
+
+                if (data.images) {
+                    displayMessage(data.images, 'received');
+                }
+            } catch (error) {
+                console.error("Error fetching AI response:", error);
+            }
         }
-
-        // Display images if any
-        if (data.images) {
-            displayMessage(data.images, 'received');
-        }
-    } catch (error) {
-        console.error("error fetching AI response:", error);
-    }
-}
-
-
     
         function toggleKebabMenu(event) {
             event.stopPropagation();
