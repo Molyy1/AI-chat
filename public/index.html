@@ -172,33 +172,47 @@
         }
 
          .message {
-            padding: 10px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-            max-width: 70%;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            position: relative;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
+    padding: 10px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    max-width: 80%;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px; /* Reduced gap */
+}
 
         .message .avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            background-size: cover;
-            background-position: center;
-        }
-
+    width: 28px; /* Smaller avatar */
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+    margin-top: 2px; /* Align slightly lower */
+}
         .message .content {
             flex-grow: 1;
             padding: 10px;
             border-radius: 15px;
             position: relative;
         }
+      
+       /* Align AI avatar closer to left */
+.message.received {
+    flex-direction: row;
+    align-self: flex-start;
+    margin-left: -15px; /* Slight shift left */
+}
+
+/* Align user avatar closer to right */
+.message.sent {
+    flex-direction: row-reverse;
+    align-self: flex-end;
+    margin-right: -15px; /* Slight shift right */
+}
 
         .message.sent {
             flex-direction: row-reverse;
@@ -870,7 +884,7 @@
         }
 
         
-   async function fetchChatResponse(userInput) {
+ async function fetchChatResponse(userInput) {
             try {
                 const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
                 const data = await response.json();
