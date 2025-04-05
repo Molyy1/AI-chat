@@ -175,7 +175,7 @@
     padding: 10px;
     border-radius: 20px;
     margin-bottom: 15px;
-    max-width: 80%;
+    max-width: 83%;
     word-wrap: break-word;
     white-space: pre-wrap;
     position: relative;
@@ -184,7 +184,7 @@
     gap: 8px; /* Reduced gap */
 }
 
-        .message .avatar {
+.message .avatar {
     width: 28px; /* Smaller avatar */
     height: 28px;
     border-radius: 50%;
@@ -193,54 +193,53 @@
     background-position: center;
     margin-top: 2px; /* Align slightly lower */
 }
-        .message .content {
-            flex-grow: 1;
-            padding: 10px;
-            border-radius: 15px;
-            position: relative;
-        }
-      
-       /* Align AI avatar closer to left */
+
+/* Hide avatar for sent (user) messages */
+.message.sent .avatar {
+    display: none;
+}
+
+.message .content {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 15px;
+    position: relative;
+}
+
+/* Align AI avatar closer to left */
 .message.received {
     flex-direction: row;
     align-self: flex-start;
     margin-left: -15px; /* Slight shift left */
 }
 
-/* Align user avatar closer to right */
+/* Align user message to right */
 .message.sent {
     flex-direction: row-reverse;
     align-self: flex-end;
     margin-right: -15px; /* Slight shift right */
 }
 
-        .message.sent {
-            flex-direction: row-reverse;
-            align-self: flex-end;
-        }
+.message.sent .content {
+    background-color: #DCF8C6;
+}
 
-        .message.sent .content {
-            background-color: #DCF8C6;
-        }
+.message.received .content {
+    background-color: #f0f0f0;
+}
 
-        .message.received .content {
-            background-color: #f0f0f0;
-        }
+.message.received .avatar {
+    background-image: url("https://i.ibb.co/DHMHy6GJ/9aae320629d1.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
 
-        .message.sent .avatar {
-            background-image: url('https://ui-avatars.com/api/?name=User&background=4267B2&color=fff');
-        }
-
-        .message.received .avatar {
-            background-image: url('https://ui-avatars.com/api/?name=AI&background=2196F3&color=fff');
-        }
-
-        .message img {
-            max-width: 100%;
-            border-radius: 10px;
-            margin-top: 5px;
-        }
-
+.message img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-top: 5px;
+}
         .copy-btn {
             position: absolute;
             bottom: -19px;
@@ -883,8 +882,7 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        
- async function fetchChatResponse(userInput) {
+     async function fetchChatResponse(userInput) {
             try {
                 const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
                 const data = await response.json();
@@ -900,6 +898,7 @@
                 console.error("Error fetching AI response:", error);
             }
         }
+     
     
         function toggleKebabMenu(event) {
             event.stopPropagation();
