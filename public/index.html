@@ -941,13 +941,23 @@
             const contentDiv = document.createElement('div');
             contentDiv.className = 'content';
 
-            if (Array.isArray(text)) {
+         if (Array.isArray(text)) {
+                const messageText = document.createElement('div');
+                messageText.textContent = "Here is your image✅️:";
+                messageText.style.marginBottom = '8px';
+                
+                const imageWrapper = document.createElement('div');
                 text.forEach(imgSrc => {
                     const img = document.createElement('img');
                     img.src = imgSrc;
                     img.alt = "AI response image";
-                    contentDiv.appendChild(img);
+                    img.style.display = 'block';
+                    img.style.marginTop = '5px';
+                    imageWrapper.appendChild(img);
                 });
+
+                contentDiv.appendChild(messageText);
+                contentDiv.appendChild(imageWrapper);
             } else {
                 contentDiv.textContent = text;
                 if (sender === 'received') {
@@ -960,6 +970,7 @@
                     contentDiv.appendChild(copyBtn);
                 }
             }
+
 
             messageDiv.appendChild(avatarDiv);
             messageDiv.appendChild(contentDiv);
