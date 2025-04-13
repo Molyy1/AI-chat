@@ -40,9 +40,8 @@ app.get("/api/chat", async (req, res) => {
         const imageUrl = urls[i];
         const imageFileName = `image_${Date.now()}_${i + 1}.jpg`;
         const imagePath = path.join(__dirname, "public", imageFileName);
-        const imageWebPath = `/${imageFileName}`; // For frontend
+        const imageWebPath = `/${imageFileName}`;
 
-        // Download image
         const imageResponse = await axios({
           url: imageUrl,
           responseType: 'stream',
@@ -54,13 +53,11 @@ app.get("/api/chat", async (req, res) => {
             .on('error', reject);
         });
 
-        // Append image tag (HTML) to be shown under text
         imageTags.push(`<img src="${imageWebPath}" alt="Image" style="max-width: 100%; margin-top: 10px;" />`);
       }
     }
 
-    // Final response: Text + images rendered below
-    const fullContent = `${messageText}\n\n${imageTags.join('\n')}`;
+    const fullContent = `${messageText}<br><br>${imageTags.join('<br>')}`;
 
     res.send({ message: fullContent });
 
@@ -70,7 +67,6 @@ app.get("/api/chat", async (req, res) => {
   }
 });
 
-// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
