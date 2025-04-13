@@ -17,10 +17,10 @@ app.get("/api/chat", async (req, res) => {
       return res.status(400).send({ error: "Prompt is required" });
     }
 
-    // Add a cache buster (random number or timestamp) to ensure different responses
+    // Add a cache buster to ensure different responses
     const cacheBuster = Date.now();
 
-    // Use the local AI server's endpoint (with cache buster)
+    // Call local AI server endpoint
     const response = await axios.get(
       `https://yau-ai-runing-station.vercel.app/ai?prompt=${encodeURIComponent(prompt)}&cb=${cacheBuster}`
     );
@@ -37,11 +37,10 @@ app.get("/api/chat", async (req, res) => {
     if (urls && urls.length > 0) {
       const imagePaths = [];
 
-      // Download the images locally and return the message with image URLs
       for (let i = 0; i < urls.length && i < 6; i++) {
         const imageUrl = urls[i];
 
-        // Create a unique filename using timestamp and index
+        // Create unique filename
         const imageFileName = `image_${Date.now()}_${i + 1}.jpg`;
         const imagePath = path.join(__dirname, "public", imageFileName);
         imagePaths.push(`/${imageFileName}`);
@@ -51,6 +50,7 @@ app.get("/api/chat", async (req, res) => {
           url: imageUrl,
           responseType: 'stream',
         });
+
         await new Promise((resolve, reject) => {
           imageResponse.data.pipe(fs.createWriteStream(imagePath))
             .on('finish', resolve)
@@ -58,8 +58,8 @@ app.get("/api/chat", async (req, res) => {
         });
       }
 
-      // Send back the image URLs
-      res.send({ message: "HERE ARE YOUR IMAGES ✅", images: imagePaths });
+      // Send original text + images
+      res.send({ message: messageText, images: imagePaths });
     } else {
       res.send({ message: messageText });
     }
