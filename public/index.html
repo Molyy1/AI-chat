@@ -17,16 +17,58 @@
             display: flex;
             flex-direction: column;
         }
+    
+        .loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #e53e3e;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .success-message {
+            color: #2f855a;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
 
         .menu {
             display: none;
             justify-content: space-between;
             align-items: center;
             background-color: white;
-            padding: 5px 10px;
+            padding: 3px 10px;
             border-bottom: 1px solid #ddd;
             position: fixed;
             top: 0;
+            
             width: 100%;
             z-index: 1000;
             box-sizing: border-box;
@@ -554,11 +596,17 @@
     </style>
 </head>
 <body>
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
     <div class="auth-container" id="auth-container">
         <div class="auth-box">
             <h2 id="auth-title">Login</h2>
             <input type="text" id="auth-username" placeholder="Username">
             <input type="password" id="auth-password" placeholder="Password">
+            <div class="error-message" id="error-message"></div>
+            <div class="success-message" id="success-message"></div>
             <button onclick="handleAuth()">Login</button>
             <div class="auth-toggle">
                 <span id="toggle-text">Don't have an account? </span>
@@ -665,7 +713,7 @@
     </div>
 
     <script>
-        let isLogin = true;
+       let isLogin = true;
         let users = JSON.parse(localStorage.getItem('users')) || {};
 
         function toggleAuth() {
@@ -674,6 +722,12 @@
             const authButton = document.querySelector('.auth-box button');
             const toggleText = document.getElementById('toggle-text');
             const toggleLink = document.getElementById('toggle-link');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+
+            // Reset messages when toggling
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
 
             if (isLogin) {
                 authTitle.textContent = 'Login';
@@ -685,6 +739,68 @@
                 authButton.textContent = 'Sign Up';
                 toggleText.textContent = 'Already have an account? ';
                 toggleLink.textContent = 'Login';
+            }
+        }
+
+        async function handleAuth() {
+            const username = document.getElementById('auth-username').value;
+            const password = document.getElementById('auth-password').value;
+            const loader = document.getElementById('loader');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+
+            // Reset messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            if (!username || !password) {
+                errorMessage.textContent = 'Please enter both username and password';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Show loader
+            loader.style.display = 'flex';
+
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            if (isLogin) {
+                if (users[username] && users[username] === password) {
+                    successMessage.textContent = 'Login successful!';
+                    successMessage.style.display = 'block';
+                    localStorage.setItem('currentUser', username);
+                    
+                    // Hide loader after a brief delay to show success message
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        showContainer('chat');
+                        document.querySelector('.chat-input').style.display = 'flex';
+                        document.querySelector('.news-toggle').style.display = 'block';
+                        updateGoTopBtn();
+                    }, 500);
+                } else {
+                    loader.style.display = 'none';
+                    errorMessage.textContent = 'Invalid username or password';
+                    errorMessage.style.display = 'block';
+                }
+            } else {
+                if (users[username]) {
+                    loader.style.display = 'none';
+                    errorMessage.textContent = 'Username already exists';
+                    errorMessage.style.display = 'block';
+                } else {
+                    users[username] = password;
+                    localStorage.setItem('users', JSON.stringify(users));
+                    successMessage.textContent = 'Account created successfully! Please login.';
+                    successMessage.style.display = 'block';
+                    
+                    // Hide loader after a brief delay to show success message
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        toggleAuth();
+                    }, 500);
+                }
             }
         }
 
@@ -729,36 +845,6 @@
                 goTopBtn.style.display = 'none';
             } else {
                 goTopBtn.style.display = 'none';
-            }
-        }
-
-        function handleAuth() {
-            const username = document.getElementById('auth-username').value;
-            const password = document.getElementById('auth-password').value;
-
-            if (isLogin) {
-                if (users[username] && users[username] === password) {
-                    localStorage.setItem('currentUser', username);
-                    showContainer('chat');
-                    document.querySelector('.chat-input').style.display = 'flex';
-                    document.querySelector('.news-toggle').style.display = 'block';
-                    updateGoTopBtn();
-                } else {
-                    alert('Invalid username or password');
-                }
-            } else {
-                if (username && password) {
-                    if (users[username]) {
-                        alert('Username already exists');
-                    } else {
-                        users[username] = password;
-                        localStorage.setItem('users', JSON.stringify(users));
-                        alert('Account created. Please login.');
-                        toggleAuth();
-                    }
-                } else {
-                    alert('Please enter both username and password');
-                }
             }
         }
 
@@ -831,7 +917,6 @@
                 autoResize(textarea);
                 document.querySelector('.chat-input button').disabled = true;
                 
-                // Keep focus on the textarea after sending
                 textarea.focus();
 
                 const allCopyButtons = document.querySelectorAll('.copy-btn');
@@ -847,7 +932,7 @@
             const chatContainer = document.getElementById('chat-container');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message ' + sender;
-
+ 
                      // Create avatar div
             const avatarDiv = document.createElement('div');
             avatarDiv.className = 'avatar';
