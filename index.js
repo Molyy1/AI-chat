@@ -17,10 +17,7 @@ app.get("/api/chat", async (req, res) => {
       return res.status(400).send({ error: "Prompt is required" });
     }
 
-    // Add a cache buster to ensure different responses
     const cacheBuster = Date.now();
-
-    // Call local AI server endpoint
     const response = await axios.get(
       `https://yau-ai-runing-station.vercel.app/ai?prompt=${encodeURIComponent(prompt)}&cb=${cacheBuster}`
     );
@@ -29,23 +26,22 @@ app.get("/api/chat", async (req, res) => {
       throw new Error("Failed to get a response from AI");
     }
 
-    const messageText = response.data.response;
+    let messageText = response.data.response;
 
-    // Check if the response contains image URLs
+    // Extract image URLs
     const urls = messageText.match(/https?:\/\/\S+\.(jpg|jpeg|png|gif)/gi);
 
+    // Remove image links from message text
     if (urls && urls.length > 0) {
-      const imagePaths = [];
+      urls.forEach((url) => {
+        messageText = messageText.replace(url, '').trim();
+      });
 
       for (let i = 0; i < urls.length && i < 6; i++) {
         const imageUrl = urls[i];
-
-        // Create unique filename
         const imageFileName = `image_${Date.now()}_${i + 1}.jpg`;
         const imagePath = path.join(__dirname, "public", imageFileName);
-        imagePaths.push(`/${imageFileName}`);
 
-        // Download image
         const imageResponse = await axios({
           url: imageUrl,
           responseType: 'stream',
@@ -57,12 +53,11 @@ app.get("/api/chat", async (req, res) => {
             .on('error', reject);
         });
       }
-
-      // Send original text + images
-      res.send({ message: messageText, images: imagePaths });
-    } else {
-      res.send({ message: messageText });
     }
+
+    // Respond with text only, images will be served statically by frontend
+    res.send({ message: messageText });
+
   } catch (error) {
     console.error("Error in /api/chat:", error);
     res.status(500).send({ error: "Failed to get AI response" });
