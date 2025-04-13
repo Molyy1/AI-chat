@@ -27,11 +27,10 @@ app.get("/api/chat", async (req, res) => {
     }
 
     let messageText = response.data.response;
-
-    // Extract image URLs
     const urls = messageText.match(/https?:\/\/\S+\.(jpg|jpeg|png|gif)/gi);
+    const imagePaths = [];
 
-    // Remove image links from message text
+    // Remove image links from messageText and download them
     if (urls && urls.length > 0) {
       urls.forEach((url) => {
         messageText = messageText.replace(url, '').trim();
@@ -41,6 +40,7 @@ app.get("/api/chat", async (req, res) => {
         const imageUrl = urls[i];
         const imageFileName = `image_${Date.now()}_${i + 1}.jpg`;
         const imagePath = path.join(__dirname, "public", imageFileName);
+        imagePaths.push(`/${imageFileName}`);
 
         const imageResponse = await axios({
           url: imageUrl,
@@ -55,8 +55,11 @@ app.get("/api/chat", async (req, res) => {
       }
     }
 
-    // Respond with text only, images will be served statically by frontend
-    res.send({ message: messageText });
+    // Return the cleaned text and image filenames (not URLs)
+    res.send({
+      message: messageText,
+      images: imagePaths, // used by frontend to render images
+    });
 
   } catch (error) {
     console.error("Error in /api/chat:", error);
