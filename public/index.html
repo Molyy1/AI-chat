@@ -934,37 +934,44 @@
             messageDiv.className = 'message ' + sender;
  
                      // Create avatar div
-            const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'avatar';
+const avatarDiv = document.createElement('div');
+avatarDiv.className = 'avatar';
 
-            // Create content div
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'content';
+// Create content div
+const contentDiv = document.createElement('div');
+contentDiv.className = 'content';
 
-            if (Array.isArray(text)) {
-                text.forEach(imgSrc => {
-                    const img = document.createElement('img');
-                    img.src = imgSrc;
-                    img.alt = "AI response image";
-                    contentDiv.appendChild(img);
-                });
-            } else {
-                contentDiv.textContent = text;
-                if (sender === 'received') {
-                    const copyBtn = document.createElement('button');
-                    copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
-                    copyBtn.className = 'copy-btn';
-                    copyBtn.onclick = function() {
-                        copyToClipboard(text, copyBtn);
-                    };
-                    contentDiv.appendChild(copyBtn);
-                }
-            }
+let isImageOnly = false;
 
-            messageDiv.appendChild(avatarDiv);
-            messageDiv.appendChild(contentDiv);
-            chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+if (Array.isArray(text)) {
+    isImageOnly = true;
+    text.forEach(imgSrc => {
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.alt = "AI response image";
+        contentDiv.appendChild(img);
+    });
+} else {
+    contentDiv.textContent = text;
+    if (sender === 'received') {
+        const copyBtn = document.createElement('button');
+        copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
+        copyBtn.className = 'copy-btn';
+        copyBtn.onclick = function() {
+            copyToClipboard(text, copyBtn);
+        };
+        contentDiv.appendChild(copyBtn);
+    }
+}
+
+// Append message div
+if (sender === 'received' && !isImageOnly) {
+    messageDiv.appendChild(avatarDiv);
+}
+
+messageDiv.appendChild(contentDiv);
+chatContainer.appendChild(messageDiv);
+chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
      async function fetchChatResponse(userInput) {
