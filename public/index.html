@@ -937,42 +937,59 @@
 const avatarDiv = document.createElement('div');
 avatarDiv.className = 'avatar';
 
-// Create content div
-const contentDiv = document.createElement('div');
-contentDiv.className = 'content';
+function appendMessage(text, sender) {
+    // Create message div
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message ' + sender;
 
-let isImageOnly = false;
+    // Create content div
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'content';
 
-if (Array.isArray(text)) {
-    isImageOnly = true;
-    text.forEach(imgSrc => {
-        const img = document.createElement('img');
-        img.src = imgSrc;
-        img.alt = "AI response image";
-        contentDiv.appendChild(img);
-    });
-} else {
-    contentDiv.textContent = text;
-    if (sender === 'received') {
-        const copyBtn = document.createElement('button');
-        copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
-        copyBtn.className = 'copy-btn';
-        copyBtn.onclick = function() {
-            copyToClipboard(text, copyBtn);
-        };
-        contentDiv.appendChild(copyBtn);
-    }
-}
+    let isImageOnly = false;
 
-// Append message div
-if (sender === 'received' && !isImageOnly) {
-    messageDiv.appendChild(avatarDiv);
-}
-
-messageDiv.appendChild(contentDiv);
-chatContainer.appendChild(messageDiv);
-chatContainer.scrollTop = chatContainer.scrollHeight;
+    if (Array.isArray(text)) {
+        isImageOnly = true;
+        text.forEach(imgSrc => {
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.alt = "AI response image";
+            img.style.maxWidth = '100%';
+            img.style.borderRadius = '10px';
+            img.style.margin = '8px 0';
+            contentDiv.appendChild(img);
+        });
+    } else {
+        contentDiv.textContent = text;
+        if (sender === 'received') {
+            const copyBtn = document.createElement('button');
+            copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
+            copyBtn.className = 'copy-btn';
+            copyBtn.onclick = function() {
+                copyToClipboard(text, copyBtn);
+            };
+            contentDiv.appendChild(copyBtn);
         }
+    }
+
+    // Only append avatar if not image-only and sender is 'received'
+    if (sender === 'received' && !isImageOnly) {
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'avatar';
+        messageDiv.appendChild(avatarDiv);
+    }
+
+    // Append content and message to chat
+    if (isImageOnly) {
+        // If image only, no messageDiv wrapper – just add content directly
+        chatContainer.appendChild(contentDiv);
+    } else {
+        messageDiv.appendChild(contentDiv);
+        chatContainer.appendChild(messageDiv);
+    }
+
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
 
      async function fetchChatResponse(userInput) {
             try {
