@@ -941,64 +941,49 @@
             const contentDiv = document.createElement('div');
             contentDiv.className = 'content';
 
-        
+            if (Array.isArray(text)) {
+                text.forEach(imgSrc => {
+                    const img = document.createElement('img');
+                    img.src = imgSrc;
+                    img.alt = "AI response image";
+                    contentDiv.appendChild(img);
+                });
+            } else {
+                contentDiv.textContent = text;
+                if (sender === 'received') {
+                    const copyBtn = document.createElement('button');
+                    copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.onclick = function() {
+                        copyToClipboard(text, copyBtn);
+                    };
+                    contentDiv.appendChild(copyBtn);
+                }
+            }
 
-  if (typeof text === 'string') {
-    // Case: text with literal <img> tag inside
-    if (text.includes('<img')) {
-        contentDiv.innerHTML = text; // Render raw HTML with <img> tag
-    } else {
-        // Just plain text — safe display and add copy button
-        contentDiv.textContent = text;
-
-        if (sender === 'received') {
-            const copyBtn = document.createElement('button');
-            copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy';
-            copyBtn.className = 'copy-btn';
-            copyBtn.onclick = function () {
-                copyToClipboard(text, copyBtn);
-            };
-            contentDiv.appendChild(copyBtn);
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(contentDiv);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
-    }
-} else if (Array.isArray(text)) {
-    // Case: array of image URLs
-    const messageText = document.createElement('div');
-    messageText.textContent = "Here is your image:";
-    messageText.style.marginBottom = '8px';
 
-    const imageWrapper = document.createElement('div');
-    text.forEach(imgSrc => {
-        const img = document.createElement('img');
-        img.src = imgSrc;
-        img.alt = "AI response image";
-        img.style.display = 'block';
-        img.style.marginTop = '5px';
-        imageWrapper.appendChild(img);
-    });
+     async function fetchChatResponse(userInput) {
+            try {
+                const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
+                const data = await response.json();
 
-    contentDiv.appendChild(messageText);
-    contentDiv.appendChild(imageWrapper);
-}
+                if (data.message) {
+                    displayMessage(data.message, 'received');
+                }
 
-    messageDiv.appendChild(avatarDiv);
-    messageDiv.appendChild(contentDiv);
-    chatContainer.appendChild(messageDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-}
-
-async function fetchChatResponse(userInput) {
-    try {
-        const response = await fetch(`/api/chat?prompt=${encodeURIComponent(userInput)}`);
-        const data = await response.json();
-
-        if (data.message) {
-            displayMessage(data.message, 'received');
+                if (data.images) {
+                    displayMessage(data.images, 'received');
+                }
+            } catch (error) {
+                console.error("Error fetching AI response:", error);
+            }
         }
-    } catch (error) {
-        console.error("Error fetching AI response:", error);
-    }
-}
+     
     
         function toggleKebabMenu(event) {
             event.stopPropagation();
